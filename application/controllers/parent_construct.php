@@ -5,7 +5,7 @@ if (!$this->authex->logged_in())
 
 	// they are not logged in
 
-	redirect("auth/login");
+	redirect("auth");
 }
 else
 {

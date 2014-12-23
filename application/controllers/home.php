@@ -17,6 +17,12 @@ function __construct()
 		
 	}
 	
+	function logout()
+	{
+		$this->authex->logout();
+		redirect('');
+	}
+	
 		
 	
 	
