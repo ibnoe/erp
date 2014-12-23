@@ -1,0 +1,42 @@
+
+html {margin:0;padding:0;border:0; overflow-y: scroll;}
+body { font-size:12px;;color:#222; font-family: Geneva, Arial, Helvetica, sans-serif;  }
+#container {margin:0 auto; }
+#content{ position:relative;}
+
+h1 { font-size:25px; margin: 0; padding: 0; }
+#info { clear: both; width: 100%; margin: 30px 0 0 0; table-layout: fixed;border-collapse: collapse; }
+
+#info td{ padding-top: .3em;padding-bottom: .3em;vertical-align:top; font-size:12px;}
+#info td.item-left { width:150px; font-size:12px; font-weight:bold; }
+#info td.item-right { width:150px; font-size:12px; font-weight:bold;}
+#info td.data { width: 30%;}
+
+#items { clear: both; width: 100%; margin: 30px 0 0 0; border: 1px solid black;  border-collapse: collapse; }
+#items td  { border: 1px solid black; padding: 5px;  font-size:12px; }
+#items th { border: 1px solid black; padding: 5px; font-size:12px; font-weight:bold;  background: #eee;}
+
+
+#items tr.item-row td { border: 0; vertical-align: top; border-right:1px solid black; }
+#items td.item-name { width: 46%; }
+#items td.total-line { border-right: 0; text-align: right; }
+#items td.total-value { border-left: 0; padding: 10px; }
+
+#items td.balance { background: #eee; }
+#items td.blank { border: 0; }
+#items .titles{ text-align:center;}
+#items .unit-cost{ text-align:right;}
+#items .quantity{ text-align:center;}
+#items .price{ text-align:right;}
+.pro_name{font-size:12px; font-weight:bold;}
+.identity{line-height:25px; font-size:11px;}
+.address{ font-size:10px; text-align:center;line-height: 15px;}
+.amount-to-word{font-size:12px; font-weight:bold;}
+data.{width:30%;}
+#terms { text-align: center; margin: 20px 0 0 0; }
+#terms h5 { text-transform: uppercase; font: 13px Helvetica, Sans-Serif; letter-spacing: 10px; border-bottom: 1px solid black; padding: 0 0 8px 0; margin: 0 0 8px 0; }
+
+#leftsignature { width:220px; float: left; font-size:11px; font-weight:bold;}
+#rightsignature {width:220px; float: right; font-size:11px; font-weight:bold;}
+#footer {font-size:9px; text-align:center; }
+

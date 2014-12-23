@@ -1,0 +1,114 @@
+@import url("bootstrap.min.css");
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+body {
+font-family:'Open Sans', sans-serif!important;
+}
+
+html,body {
+height:100%;
+}
+
+#wrap {
+min-height:100%;
+height:auto!important;
+margin:0 auto -100px;
+}
+
+#push,#footer {
+height:100px;
+}
+
+#footer {
+background-color:#f5f5f5;
+}
+
+.centerLogo {
+display:table-cell;
+vertical-align:middle;
+height:123px;
+width:118px;
+text-align:center;
+padding-top:3px;
+padding-bottom:3px;
+}
+
+.schoolLogo {
+position:absolute;
+top:0;
+left:10px;
+width:118px;
+min-height:123px;
+background:none repeat scroll 0 0 #FFF;
+border:1px solid #eee;
+box-shadow:0 0 20px -3px #333;
+z-index:2;
+}
+
+
+/* Navigation Menu */
+.navbar-nav > li:hover > .dropdown-menu {
+  display: block;
+}
+
+.nav , .menu-item {
+font-size:12.5px !important;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+.dropdown-submenu{position:relative;}
+.dropdown-submenu>.dropdown-menu{top:0;left:100%;margin-top:-6px;margin-left:-1px;-webkit-border-radius:0 6px 6px 6px;-moz-border-radius:0 6px 6px 6px;border-radius:0 6px 6px 6px;}
+/*.dropdown-submenu:hover>.dropdown-menu{display:block;}*/
+.dropdown-submenu>a:after{display:block;content:" ";float:right;width:0;height:0;border-color:transparent;border-style:solid;border-width:5px 0 5px 5px;border-left-color:#cccccc;margin-top:5px;margin-right:-10px;}
+.dropdown-submenu:hover>a:after{border-left-color:#ffffff;}
+.dropdown-submenu.pull-left{float:none;}.dropdown-submenu.pull-left>.dropdown-menu{left:-100%;margin-left:10px;-webkit-border-radius:6px 0 6px 6px;-moz-border-radius:6px 0 6px 6px;border-radius:6px 0 6px 6px;}
+
+
+/* End of Navigation Menu */
+
+
+
+/* Main Content */
+
+.pageTitle {
+	color:#6A6A6A;
+ }
+.error {
+	
+	color:#FF0000;
+	font-size:12px;
+}
+
+/* End of Main Content */
+
+
+
+/* Form */
+label {
+	font-weight: 500 !important;
+}
+
+.control-label {
+	font-weight: 500 !important;
+}
+/* End of Form */
+
+
+/* Icon */
+
+.glyphicon-ok{
+	color:#090;
+}
+
+.colborder {padding-right:24px;margin-right:25px;border-right:1px solid #ddd;}
+
+#gtable th, td {
+	font-size:12px;	
+}
+.dataTable{
+	font-size:12px;	
+}
+
+	

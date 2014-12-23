@@ -1,0 +1,1 @@
+<div class="<?php echo $type ; ?>"> <?php echo $msg; ?></div>
