@@ -154,7 +154,7 @@ font-size:12.5px !important;
 
 .nav-side-menu {
   overflow: auto;
-  font-family: verdana;
+  font-family:'Open Sans', sans-serif!important;
   font-size: 12px;
   font-weight: 200;
   background-color: #222;
@@ -279,6 +279,9 @@ font-size:12.5px !important;
   .nav-side-menu .menu-list .menu-content {
     display: block;
   }
+}
+.sub-menu li  a {
+  color: #d19b3d !important;
 }
 
 /* End of Both Left and Top Menu */	

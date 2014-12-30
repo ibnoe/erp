@@ -36,7 +36,7 @@ class Auth extends CI_Controller {
 			else
 			{
 				$this->session->set_flashdata('msg', 'Wrong Login Information');
-				$this->load->view('auth/view_login');
+				redirect("auth");	
 			}
 		}
 	}

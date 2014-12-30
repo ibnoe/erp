@@ -8,7 +8,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>MicroElephant ERP</title>
-<link rel="shortcut icon" href="<?php echo base_url();?>assets/images/fav.ico" />      
+<link rel="shortcut icon" href="<?php echo base_url();?>assets/images/fav.ico" />
+<link rel="stylesheet" href="<?php echo base_url();?>assets/fontawesome/css/font-awesome.min.css" type="text/css">
+
 <link rel="stylesheet" href="<?php echo base_url();?>assets/css/style.css" type="text/css" media="screen, projection">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/dataTable/dataTables.bootstrap.css" type="text/css" media="screen, projection">      
       
