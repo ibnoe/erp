@@ -15,7 +15,7 @@ class Mod_category extends CI_Model {
           'category_id' => '',
        	  'category_name' => $category_name,         
        );
-       $this->db->insert('cane_category', $data);
+       $this->db->insert('cx_category', $data);
        if($this->db->affected_rows() > 0)
        { 
          return 1;
@@ -29,7 +29,7 @@ class Mod_category extends CI_Model {
    function get_all()
    {
        $this->db->select('*');
-       $this->db->from('cane_category');       
+       $this->db->from('cx_category');       
        $this->db->order_by('category_name','ASC');
        $getData = $this->db->get('');
        if($getData->num_rows() > 0)
@@ -40,7 +40,7 @@ class Mod_category extends CI_Model {
 
    function get_single_row($id)
    {
-       $sql = "SELECT * FROM cane_category WHERE category_id = ?" ;
+       $sql = "SELECT * FROM cx_category WHERE category_id = ?" ;
        $getData = $this->db->query($sql,array($id));
        if($getData->num_rows() > 0)
        return $getData->result_array();
@@ -58,7 +58,7 @@ class Mod_category extends CI_Model {
        );
        $this->db->where('category_id',$category_id);
       
-       $this->db->update('cane_category', $data);
+       $this->db->update('cx_category', $data);
        if($this->db->affected_rows() > 0)
        { 
          return 1;
@@ -71,7 +71,7 @@ class Mod_category extends CI_Model {
 
    function delete_item($id)
    {
-       $query= $this->db->delete('cane_category', array('category_id' => $id));
+       $query= $this->db->delete('cx_category', array('category_id' => $id));
        if($this->db->affected_rows() > 0)
        { 
          return 1;

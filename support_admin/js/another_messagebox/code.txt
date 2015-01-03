@@ -1,1 +1,0 @@
- $.growlUI('Growl Notification', 'Have a nice day!'); 

@@ -4,7 +4,7 @@
       <tr>
          <th>Sl</th>
          <th>Category Name</th>
-          <?php if( $this->authex->get_user_level() == 1 ){?>	 	 							  			
+          <?php if( 1 == 1 ){?>	 	 							  			
          <th>Edit</th>
          <th>Delete</th>
          <?php }?>	
@@ -15,7 +15,7 @@
       <tr id="trid_<?php echo $row['category_id']; ?>">
          <td><?php echo $i; ?>.</td>
          <td><?php echo $row['category_name'];?></td>
-        <?php if( $this->authex->get_user_level() == 1 ){?>	
+        <?php if( 1 == 1 ){?>	
          <td> 
          	<a class="btn btn-xs" href="<?php echo base_url();?>category/edit/<?php echo $row['category_id'];?>">
        		<i class="glyphicon glyphicon-edit"></i>Edit

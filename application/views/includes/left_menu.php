@@ -10,9 +10,9 @@
                 <?php if(count($data) > 0) { ?>
                 <?php foreach ($data as $key=>$value) { ?>       
                 
-                <li  data-toggle="collapse" data-target="#<?php echo $key; ?>" class="collapsed active">
+                <li  data-toggle="collapse" data-target="#<?php echo preg_replace('/\s+/', '', $key); ?>" class="collapsed active">
                   <a href="#"><i class="fa fa-caret-down fa-lg"></i><?php echo $key; ?></a>
-                  	<ul class="sub-menu collapse" id="<?php echo $key; ?>">                
+                  	<ul class="sub-menu collapse" id="<?php echo preg_replace('/\s+/', '', $key); ?>">                
                 <?php foreach ($value as $rowKey=>$rowValue) { ?>                                                 		
                 	<li><a href="<?php echo base_url(). $rowValue['menuLink'];?>"><?php echo $rowValue['menuName']; ?></a></li>               		
                 <?php } ?>     	            
@@ -25,3 +25,4 @@
 </div>
 </div>
 <!-- End of Menu -->
+

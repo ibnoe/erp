@@ -99,7 +99,7 @@ class Category extends CI_Controller {
    {
    		
    	$data = array();
-   	$data['tablename'] 		= 'cane_category';
+   	$data['tablename'] 		= 'cx_category';
    	$data['searchColumn'] 	= 'category_name';
    	$data['primary_key'] 	= 'category_id';   	
    

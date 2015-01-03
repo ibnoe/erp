@@ -81,5 +81,16 @@ $(function() {
         return false;
 
     });
+    
+    // To remove hash from links when clicking on Left Menu items 
+    $( ".menu-list > ul > li > a" ).click(function( event ) {
+  	  event.preventDefault();
+
+  	});
 });
+
+
+
+
+
  
