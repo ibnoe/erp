@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 03, 2015 at 08:06 AM
+-- Generation Time: Jan 07, 2015 at 10:47 AM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.11
 
@@ -68,6 +68,22 @@ INSERT INTO `cx_approvers` (`id`, `user_id`, `section_id`, `branch_id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `cx_bill_of_materials`
+--
+
+CREATE TABLE IF NOT EXISTS `cx_bill_of_materials` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) NOT NULL,
+  `cost` decimal(10,2) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `parent_item_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `cx_branch`
 --
 
@@ -86,25 +102,6 @@ CREATE TABLE IF NOT EXISTS `cx_branch` (
 INSERT INTO `cx_branch` (`branch_id`, `branch_name`, `branch_address`, `company_id`) VALUES
 (1, 'Head Office', '', 1),
 (2, 'Banani Branch', '', 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cx_category`
---
-
-CREATE TABLE IF NOT EXISTS `cx_category` (
-  `category_id` int(11) NOT NULL AUTO_INCREMENT,
-  `category_name` varchar(255) NOT NULL,
-  PRIMARY KEY (`category_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
-
---
--- Dumping data for table `cx_category`
---
-
-INSERT INTO `cx_category` (`category_id`, `category_name`) VALUES
-(1, 'Computer');
 
 -- --------------------------------------------------------
 
@@ -178,6 +175,95 @@ CREATE TABLE IF NOT EXISTS `cx_inventory_location` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `cx_items`
+--
+
+CREATE TABLE IF NOT EXISTS `cx_items` (
+  `item_id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_type` int(11) NOT NULL,
+  `parent_item` int(11) NOT NULL,
+  `item_name` varchar(255) NOT NULL,
+  `item_unit` int(11) NOT NULL,
+  `item_code` varchar(255) DEFAULT NULL,
+  `is_active` int(11) NOT NULL,
+  `entry_by` int(11) NOT NULL,
+  PRIMARY KEY (`item_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cx_item_inventory`
+--
+
+CREATE TABLE IF NOT EXISTS `cx_item_inventory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `asset_account` int(11) NOT NULL,
+  `reorder_level` int(11) NOT NULL,
+  `on_hand` int(11) NOT NULL,
+  `total_value` decimal(10,2) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cx_item_purchase`
+--
+
+CREATE TABLE IF NOT EXISTS `cx_item_purchase` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` text NOT NULL,
+  `cost` decimal(10,2) NOT NULL,
+  `debit_account` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cx_item_sales`
+--
+
+CREATE TABLE IF NOT EXISTS `cx_item_sales` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `description` text NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `credit_account` int(11) NOT NULL,
+  `item_id` int(11) NOT NULL,
+  `tax_code_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cx_item_types`
+--
+
+CREATE TABLE IF NOT EXISTS `cx_item_types` (
+  `item_type_id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_type_name` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  PRIMARY KEY (`item_type_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+
+--
+-- Dumping data for table `cx_item_types`
+--
+
+INSERT INTO `cx_item_types` (`item_type_id`, `item_type_name`, `description`) VALUES
+(1, 'Service', 'Services you charge for or purchase. Examples include specialized labor, consulting hours, and professional fees.'),
+(2, 'Inventory part', 'Goods you purchase, track as inventory, and resell.'),
+(3, 'Inventory assembly', 'Use for Inventory item that you assemble from other inventory items and then sell. Assembled goods you build or purchase, track as inventory, and resell. Note: this software cannot track the costs associated with the manufacturing process itself. In other words, the cost of a built assembly item depends only on the cost of its components. '),
+(4, 'Non-inventory part', 'Goods you buy but don''t track (such as office supplies), or materials you buy for a specific job that you charge back to your customer.'),
+(5, 'Fixed asset', 'An asset you do not expect to convert to cash during one year of normal operations. A fixed asset is usually something that is necessary for the operation of your business—such as a truck, cash register, or computer.');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `cx_menus`
 --
 
@@ -242,50 +328,6 @@ INSERT INTO `cx_permissions` (`permission_id`, `role_id`, `menu_id`) VALUES
 (2, 2, 2),
 (3, 2, 3),
 (4, 2, 4);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cx_products`
---
-
-CREATE TABLE IF NOT EXISTS `cx_products` (
-  `product_id` int(11) NOT NULL AUTO_INCREMENT,
-  `category_id` int(11) NOT NULL,
-  `subcategory_id` int(11) NOT NULL,
-  `product_type_id` int(11) NOT NULL,
-  `product_name` varchar(255) NOT NULL,
-  `unit_name` varchar(50) DEFAULT NULL,
-  `product_code` varchar(255) DEFAULT NULL,
-  `cost` decimal(10,2) NOT NULL,
-  `selling_price` decimal(10,2) NOT NULL,
-  `entry_by` int(11) NOT NULL,
-  PRIMARY KEY (`product_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cx_product_types`
---
-
-CREATE TABLE IF NOT EXISTS `cx_product_types` (
-  `product_type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_type` varchar(100) NOT NULL,
-  `description` text NOT NULL,
-  PRIMARY KEY (`product_type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
-
---
--- Dumping data for table `cx_product_types`
---
-
-INSERT INTO `cx_product_types` (`product_type_id`, `product_type`, `description`) VALUES
-(1, 'Service', 'Services you charge for or purchase. Examples include specialized labor, consulting hours, and professional fees.'),
-(2, 'Inventory part', 'Goods you purchase, track as inventory, and resell.'),
-(3, 'Inventory assembly', 'Assembled goods you build or purchase, track as inventory, and resell. Note: this software cannot track the costs associated with the manufacturing process itself. In other words, the cost of a built assembly item depends only on the cost of its components.'),
-(4, 'Non-inventory part', 'Goods you buy but don''t track (such as office supplies), or materials you buy for a specific job that you charge back to your customer.'),
-(5, 'Fixed asset', 'An asset you do not expect to convert to cash during one year of normal operations. A fixed asset is usually something that is necessary for the operation of your business—such as a truck, cash register, or computer.');
 
 -- --------------------------------------------------------
 
@@ -360,6 +402,7 @@ INSERT INTO `cx_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activ
 ('230aa823a06b9f820b9adaffd4b969dd', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419886858, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:1:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}}}'),
 ('2682b1bfb12cb15d7868030c17f72bba', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419851745, ''),
 ('28f4b533b401d704c5570f530f75d4f6', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419931626, ''),
+('2ccdf3d052880b0321b549abafcb3bdd', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1420607013, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:2:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}s:18:"Product Management";a:2:{i:0;a:2:{s:8:"menuName";s:12:"Add Category";s:8:"menuLink";s:12:"category/add";}i:1;a:2:{s:8:"menuName";s:13:"Category List";s:8:"menuLink";s:13:"category/show";}}}}'),
 ('372b7b933b753f3a3769c99c85fac98b', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419885880, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:1:{s:8:"Purchase";a:1:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}}}}'),
 ('4043a803964efa3b571692689fd7d3c2', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419931866, ''),
 ('5352013563869ac353d6ad4534700ac9', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419887355, ''),
@@ -367,7 +410,9 @@ INSERT INTO `cx_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activ
 ('73edb89fe28ace38cd1bf5ce5b147b6a', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419936831, ''),
 ('76e2fbfea964c236ecfc9c871c61e0cf', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419886388, ''),
 ('7cd11edb4d7d6b7910b68eab66f778e2', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419891874, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:1:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}}}'),
+('8ff96876b644258fce6c725a5ea33aa0', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1420389403, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:2:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}s:18:"Product Management";a:2:{i:0;a:2:{s:8:"menuName";s:12:"Add Category";s:8:"menuLink";s:12:"category/add";}i:1;a:2:{s:8:"menuName";s:13:"Category List";s:8:"menuLink";s:13:"category/show";}}}}'),
 ('a502fd686e4c8478a27a0bd37e099dc5', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419957738, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:2:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}s:18:"Product Management";a:1:{i:0;a:2:{s:8:"menuName";s:12:"Add Category";s:8:"menuLink";s:12:"category/add";}}}}'),
+('a727a8dfb6e023d5f8762b485aee8f82', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1420477901, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:2:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}s:18:"Product Management";a:2:{i:0;a:2:{s:8:"menuName";s:12:"Add Category";s:8:"menuLink";s:12:"category/add";}i:1;a:2:{s:8:"menuName";s:13:"Category List";s:8:"menuLink";s:13:"category/show";}}}}'),
 ('ad9c590ec043cab5b28b586712ae4cd9', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419966970, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:2:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}s:18:"Product Management";a:2:{i:0;a:2:{s:8:"menuName";s:12:"Add Category";s:8:"menuLink";s:12:"category/add";}i:1;a:2:{s:8:"menuName";s:13:"Category List";s:8:"menuLink";s:13:"category/show";}}}}'),
 ('bcc105aa16aa5727011a512f388c18ef', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1420203746, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:2:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}s:18:"Product Management";a:2:{i:0;a:2:{s:8:"menuName";s:12:"Add Category";s:8:"menuLink";s:12:"category/add";}i:1;a:2:{s:8:"menuName";s:13:"Category List";s:8:"menuLink";s:13:"category/show";}}}}'),
 ('c67f8f9be1dbaf977c1dd43ddfb7cc9b', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1420119312, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:2:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}s:18:"Product Management";a:2:{i:0;a:2:{s:8:"menuName";s:12:"Add Category";s:8:"menuLink";s:12:"category/add";}i:1;a:2:{s:8:"menuName";s:13:"Category List";s:8:"menuLink";s:13:"category/show";}}}}'),
@@ -375,19 +420,20 @@ INSERT INTO `cx_sessions` (`session_id`, `ip_address`, `user_agent`, `last_activ
 ('e467e844cc8f3bca8be49552e2e4ba50', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419891632, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:1:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}}}'),
 ('e966c0d392820ea3ee7e91bf67867471', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419866634, 'a:4:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";}'),
 ('ec92eea7afeb01c09442ffd689d89f62', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419934710, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:2:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}s:18:"Product Management";a:1:{i:0;a:2:{s:8:"menuName";s:12:"Add Category";s:8:"menuLink";s:12:"category/add";}}}}'),
+('ef0a48f03464b9620809af49e0f9f2ff', '::1', 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36', 1420389429, 'a:5:{s:7:"user_id";s:1:"1";s:7:"role_id";s:1:"2";s:9:"user_name";s:12:"Mahbub Ahmed";s:9:"branch_id";s:1:"1";s:10:"left_menus";a:2:{s:8:"Purchase";a:2:{i:0;a:2:{s:8:"menuName";s:28:"Submit Inventory Requisition";s:8:"menuLink";s:20:"purchase/requisition";}i:1;a:2:{s:8:"menuName";s:24:"View Purchase Requsition";s:8:"menuLink";s:25:"purchase/view/requisition";}}s:18:"Product Management";a:2:{i:0;a:2:{s:8:"menuName";s:12:"Add Category";s:8:"menuLink";s:12:"category/add";}i:1;a:2:{s:8:"menuName";s:13:"Category List";s:8:"menuLink";s:13:"category/show";}}}}'),
 ('fa6796dbf56927c217bd69dac314c9d1', '::1', 'Mozilla/5.0 (Windows NT 6.1; rv:35.0) Gecko/20100101 Firefox/35.0', 1419887119, '');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cx_subcategory`
+-- Table structure for table `cx_units`
 --
 
-CREATE TABLE IF NOT EXISTS `cx_subcategory` (
-  `subcategory_id` int(11) NOT NULL AUTO_INCREMENT,
-  `subcategory_name` varchar(255) NOT NULL,
-  `parent_category` int(11) NOT NULL,
-  PRIMARY KEY (`subcategory_id`)
+CREATE TABLE IF NOT EXISTS `cx_units` (
+  `unit_id` int(11) NOT NULL AUTO_INCREMENT,
+  `unit_name` varchar(255) NOT NULL,
+  `entry_by` int(11) NOT NULL,
+  PRIMARY KEY (`unit_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -412,7 +458,7 @@ CREATE TABLE IF NOT EXISTS `cx_users` (
 --
 
 INSERT INTO `cx_users` (`user_id`, `user_email`, `user_password`, `employee_id`, `role_id`, `user_status`, `last_login`) VALUES
-(1, 'srijon00@yahoo.com', '$2y$10$odRf8JHVH1Sn4TUDB13i..OJP5EKVn7uqVIqlUHVcfG2Rq/KXPcQa', 1, 2, 1, '2015-01-02 14:02:45');
+(1, 'srijon00@yahoo.com', '$2y$10$odRf8JHVH1Sn4TUDB13i..OJP5EKVn7uqVIqlUHVcfG2Rq/KXPcQa', 1, 2, 1, '2015-01-07 06:03:43');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
