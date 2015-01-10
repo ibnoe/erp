@@ -58,12 +58,12 @@ $(function() {
 
 });
 
-/* Left Menu */
+
 
 $(function() {
 
+	/* Left Menu */
     var drawerName = '.drawer';
-
     $(drawerName).drawer({
         desktopEvent: 'click'
     });
@@ -87,8 +87,20 @@ $(function() {
   	  event.preventDefault();
 
   	});
+    ///* Left Menu Ends */
+    
+    // CheckBoxes 
+    $('#has_subitem').bootstrapToggle({
+        on: 'Yes',
+        off: 'No'
+      });
+    
+    //Styling Dropdown
+    $('.item-type').selectpicker();
+    $('.cogs_account').selectpicker();
+    
+    
 });
-
 
 
 
