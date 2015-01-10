@@ -1,7 +1,7 @@
 <style>
 .control-label{
 padding-top: 5px !important;
-font-size:12px !important;
+font-size:12.5px !important;
 text-align:left !important;
 }
 
@@ -9,6 +9,12 @@ text-align:left !important;
 font-size:12px;
 color: #555;
 }
+.content-title {
+	font-size:16px;
+	border-bottom: 1px solid #EEE;
+	margin-bottom:5%;
+}
+
 
 </style>
 
@@ -19,6 +25,7 @@ color: #555;
 
 <!-- Column 1 -->
 <div class="col-md-3">
+<div class="content-title">Basic</div>
 
      <div class="form-group">
      <label class="col-md-5 control-label">Item Type</label>
@@ -49,6 +56,7 @@ color: #555;
        </div>
      </div>
          
+     <div class="content-title">Inventory Information</div>
      
      <div id="Display_on_assembly">
      <div class="form-group">
@@ -115,10 +123,12 @@ color: #555;
 </div>
 <!-- End of Column 1 -->
 
-<div class="col-md-9">
+<div class="col-md-offset-1 col-md-8">
 <!-- Column 2 -->
 <div  class="col-md-6">
-
+	
+	<div class="content-title">Purchase</div>
+	
      <div class="form-group">
      <label class="col-md-5 control-label">Cost</label>
        <div class="col-md-7">
@@ -142,6 +152,8 @@ color: #555;
 
 <!-- Column 3 -->
 <div class="col-sm-6">
+
+<div class="content-title">Sales</div>
 
 <div class="form-group">
      <label class="col-md-5 control-label">Price</label>
