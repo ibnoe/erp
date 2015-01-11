@@ -98,6 +98,10 @@ $(function() {
     //Styling Dropdown
     $('.item-type').selectpicker();
     $('.cogs_account').selectpicker();
+    $('.item-unit').selectpicker();
+    $('.income_account').selectpicker();
+    $('.asset_account').selectpicker();
+    $('.parent_item_id').selectpicker();
     
     
 });

@@ -1,43 +1,40 @@
 <?php
 class Dropdown_items extends CI_Model{
 	
-	function get_items()
+	public function create_dropdown($table, $id, $name, $select_text )
 	{
-		$records = $this->db->select('*')->get('cx_items');
+		$records = $this->db->select("$id, $name")->get($table);	
+				
+		$data[''] = $select_text ;
+
+		if($records->num_rows() > 0 )
+		{
+			foreach ($records->result_array() as $row)
+			{
+				$data[$row[$id]] = $row[$name] ;
+			}
+		}
+		return $data; 		
+	}
 	
-		$data[''] = 'Select a parent item';
-			
+	
+	function get_account_heads($id)
+	{
+		$cogs_account_id = $this->config->item('cogs_account_id');
+		$sql = "SELECT acc_id, account_code, account_name FROM cx_account_heads 
+				WHERE parent_group IN (
+					SELECT acc_group_id FROM cx_account_groups WHERE grand_parent = ? OR acc_group_id = ?
+				) ORDER BY account_code ASC";
+		$records = $this->db->query($sql, array( $id, $id ));
+		
+		$data[''] = 'Select an account';
+		
 		foreach ($records->result() as $row)
 		{
-			$data[$row->item_id] = $row->item_name;
+			$data[$row->acc_id] = $row->account_name;
 		}
-		return $data;
+		return $data;		
 	}
 	
-	function get_item_types() 
-	{		 	
-		$records = $this->db->select('*')->get('cx_item_types');	
-	
-		$data[''] = 'Select an item type';
-		 
-		foreach ($records->result() as $row)
-		{	
-			$data[$row->item_type_id] = $row->item_type_name;	
-		}	
-		return $data;		 
-	}
-	
-	function get_units()
-	{
-		$records = $this->db->select('*')->get('cx_units');
-	
-		$data[''] = 'Select an unit';
-			
-		foreach ($records->result() as $row)
-		{
-			$data[$row->unit_id] = $row->unit_name;
-		}
-		return $data;
-	}
 	
 }

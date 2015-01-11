@@ -55,6 +55,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $config['base_url'] = 'http://localhost/erp/';
 
+// Accounting Information
+$config['asset_group_id'] 		= '1';
+$config['cogs_group_id'] 		= '6';
+$config['income_group_id'] 		= '4';
+
 /*
 |--------------------------------------------------------------------------
 | Index File
