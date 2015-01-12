@@ -15,8 +15,8 @@
 <link rel="stylesheet" href="<?php echo base_url();?>assets/dataTable/dataTables.bootstrap.css" type="text/css" media="screen, projection">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/switch/css/bootstrap-toggle.min.css" type="text/css">
 <link rel="stylesheet" href="<?php echo base_url();?>assets/bootDropdown/css/bootstrap-select.min.css" type="text/css">       
-      
-<script type="text/javascript" src="<?php echo base_url();?>assets/js/jquery-1.7.1.min.js"></script>
+<link rel="stylesheet" href="<?php echo base_url();?>assets/inputSpinner/jquery.bootstrap-touchspin.css" type="text/css">      
+<script type="text/javascript" src="<?php echo base_url();?>assets/js/jquery-1.11.2.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/dataTable/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/dataTable/dataTables.bootstrap.js"></script>
      
@@ -34,7 +34,8 @@
 <script type="text/javascript" src="<?php echo base_url();?>assets/menu/cooker.drawer.js"></script>     
 <script type="text/javascript" src="<?php echo base_url();?>assets/js/custom.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/switch/js/bootstrap-toggle.min.js"></script>
-<script type="text/javascript" src="<?php echo base_url();?>assets/bootDropdown/js/bootstrap-select.min.js"></script> 
+<script type="text/javascript" src="<?php echo base_url();?>assets/bootDropdown/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="<?php echo base_url();?>assets/inputSpinner/jquery.bootstrap-touchspin.js"></script> 
 
 
 </head>

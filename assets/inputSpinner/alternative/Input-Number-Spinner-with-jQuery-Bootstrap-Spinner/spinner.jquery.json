@@ -1,0 +1,28 @@
+{
+  "name": "spinner",
+  "title": "jQuery spinner",
+  "description": "A Number-Spinner based-on jQuery, Support Keyboard operations and continuous changing.",
+  "version": "0.1.5",
+  "homepage": "https://github.com/xixilive/jquery-spinner",
+  "demo": "http://xixilive.github.io/jquery-spinner",
+  "author": {
+    "name": "xixilive",
+    "email": "xixilive@gmail.com",
+    "url": "https://github.com/xixilive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/xixilive/jquery-spinner.git"
+  },
+  "bugs": "https://github.com/xixilive/jquery-spinner/issues",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/xixilive/jquery-spinner/blob/master/LICENSE-MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": ">= 1.6"
+  },
+  "keywords": ["spinner", "number-steps", "number-spinner", "continuous"]
+}
