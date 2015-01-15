@@ -18,12 +18,14 @@ class Items extends CI_Controller {
        		$this->load->model('dropdown_items');
        		
        		$data['dropdown_item_types']= $this->dropdown_items->create_dropdown('cx_item_types', 'item_type_id', 'item_type_name', 'Select an item type' );
-       		$data['dropdown_items']	= $this->dropdown_items->create_dropdown('cx_items', 'item_id', 'item_name', 'Select a parent item' );
+       		$data['dropdown_items']	= $this->dropdown_items->create_dropdown('cx_items', 'item_id', 'item_name', 'None' );
        		$data['dropdown_units']	= $this->dropdown_items->create_dropdown('cx_units', 'unit_id', 'unit_name', 'Select an unit' );
        	    
+       		$data['all_accounts_head']	= $this->dropdown_items->create_dropdown('cx_account_heads', 'acc_id', 'account_name', 'Select an account' );
        		$data['cogs_accounts'] = $this->dropdown_items->get_account_heads( $this->config->item('cogs_group_id') );
        		$data['income_accounts'] = $this->dropdown_items->get_account_heads( $this->config->item('income_group_id') );
        		$data['assets_accounts'] = $this->dropdown_items->get_account_heads( $this->config->item('asset_group_id') );
+       		$data['expense_accounts'] = $this->dropdown_items->get_account_heads( $this->config->item('expense_group_id') );
        		
        	
        	 

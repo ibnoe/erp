@@ -94,14 +94,19 @@ $(function() {
         on: 'Yes',
         off: 'No'
       });
+    $('#options_service').bootstrapToggle({
+        on: 'Yes',
+        off: 'No'
+      });
+    $('#options_non_inventory').bootstrapToggle({
+        on: 'Yes',
+        off: 'No'
+      });
+    
+    
     
     //Styling Dropdown
-    $('.item-type').selectpicker();
-    $('.cogs_account').selectpicker();
-    $('.item-unit').selectpicker();
-    $('.income_account').selectpicker();
-    $('.asset_account').selectpicker();
-    $('.parent_item_id').selectpicker();
+    $('.boot-dropdown').selectpicker();
     
     
     

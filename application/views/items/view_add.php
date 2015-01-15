@@ -52,6 +52,12 @@
    	height: 27px !important;
    	padding: 2px 10px;
    }
+   .office_supply .btn{
+   
+    height: 27px !important;
+   	padding: 2px 10px;
+   }  
+
    
 </style>
 <form role="form" name="myForm" class="form-horizontal" enctype="multipart/form-data" action="" method="post" autocomplete="off" >
@@ -62,14 +68,14 @@
       <div class="form-group">
          <label class="col-md-5 control-label">Item Type</label>
          <div class="col-md-7">
-            <?php echo form_dropdown('item_type_id', $dropdown_item_types, '','class="form-control input-sm item-type"');  ?> 
+            <?php echo form_dropdown('item_type_id', $dropdown_item_types, '','class="form-control item-type boot-dropdown"');  ?> 
             <?php echo form_error("item_type_id"); ?> 
          </div>
       </div>
       <div class="form-group">
-         <label class="col-md-5 control-label">Parent Item</label>
+         <label class="col-md-5 control-label">Subitem of</label>
          <div class="col-md-7">
-            <?php echo form_dropdown('parent_item_id', $dropdown_items, '','class="form-control input-sm parent_item_id"'); ?> 
+            <?php echo form_dropdown('parent_item_id', $dropdown_items, '','class="form-control boot-dropdown"'); ?> 
             <?php echo form_error("parent_item_id"); ?> 
          </div>
       </div>
@@ -94,13 +100,14 @@
       </div>
    	 </div>
       <div style="clear:both;"></div>
-      <div id="inventoryInformation">
-         <div class="content-title">Inventory Information</div>
+     
+     <div id="item_information">	
+         <div class="content-title">Item Information</div>
          <div id="Display_on_assembly">
             <div class="form-group">
                <label class="col-md-5 control-label">Unit</label>
                <div class="col-md-7">
-                  <?php echo form_dropdown('unit_id', $dropdown_units, '','class="form-control item-unit"'); ?> 
+                  <?php echo form_dropdown('unit_id', $dropdown_units, '','class="form-control boot-dropdown"'); ?> 
                   <?php echo form_error("unit_id"); ?> 
                </div>
             </div>
@@ -111,10 +118,11 @@
                   <?php echo form_error("item_code"); ?> 
                </div>
             </div>
+            <div id="inventoryInformation"> 
             <div class="form-group">
                <label class="col-md-5 control-label">Asset Account</label>
                <div class="col-md-7">
-                  <?php echo form_dropdown('asset_account', $assets_accounts, '','class="form-control asset_account"'); ?> 
+                  <?php echo form_dropdown('asset_account', $assets_accounts, '','class="form-control boot-dropdown"'); ?> 
                   <?php echo form_error("asset_account"); ?> 
                </div>
             </div>
@@ -137,12 +145,14 @@
                </div>
             </div>
          </div>
+        </div> 
       </div>
    </div>
    <!-- End of Column 1 -->
+   <div id="right-column">
    <div class="col-md-offset-1 col-md-8">
       <!-- Column 2 -->
-      <div  class="col-md-6 transactionalRegular"> 
+      <div  class="col-md-6 purchase transactionalRegular"> 
          <div class="content-title">Purchase</div>
          <div class="form-group">
             <label class="col-md-5 control-label">Cost</label>
@@ -151,17 +161,24 @@
                <?php echo form_error("cost"); ?> 
             </div>
          </div>
-         <div class="form-group">
+         <div class="form-group cogs">
             <label class="col-md-5 control-label">COGS Account</label>
             <div class="col-md-7">
-               <?php echo form_dropdown('cogs_account', $cogs_accounts, '','class="form-control cogs_account"'); ?> 
+               <?php echo form_dropdown('cogs_account', $cogs_accounts, '','class="form-control boot-dropdown"'); ?> 
                <?php echo form_error("cogs_account"); ?> 
+            </div>
+         </div>
+         <div class="form-group expense">
+            <label class="col-md-5 control-label">Expense Account</label>
+            <div class="col-md-7">
+               <?php echo form_dropdown('expense_account', $expense_accounts, '','class="form-control boot-dropdown"'); ?> 
+               <?php echo form_error("expense_account"); ?> 
             </div>
          </div>
       </div>
       <!-- End of Column 2 -->
       <!-- Column 3 -->
-      <div class="col-sm-6 transactionalRegular">
+      <div class="col-sm-6 sales transactionalRegular">
          <div class="content-title">Sales</div>
          <div class="form-group">
             <label class="col-md-5 control-label">Price</label>
@@ -173,13 +190,53 @@
          <div class="form-group">
             <label class="col-md-5 control-label">Income Account</label>
             <div class="col-md-7">
-               <?php echo form_dropdown('income_account', $income_accounts, '','class="form-control income_account"'); ?> 
-               <?php echo form_error("income_account"); ?> 
+               <?php echo form_dropdown('income_accounts', $income_accounts, '','class="form-control boot-dropdown"'); ?> 
+               <?php echo form_error("income_accounts"); ?> 
             </div>
          </div>
       </div>
-      <!-- End of Column 3 -->
+      <div class="col-sm-6 office_supply">
+         <div class="content-title">Office Supply Information</div>
+         <div class="form-group">
+            <label class="col-md-5 control-label">Price</label>
+            <div class="col-md-7">
+               <input type="text" class="form-control input-sm currency"  name="office_supply_price" id="office_supply_price" value="<?php echo set_value("office_supply_price"); ?>" >  
+               <?php echo form_error("office_supply_price"); ?> 
+            </div>
+         </div>
+         <div class="form-group">
+            <label class="col-md-5 control-label">Account</label>
+            <div class="col-md-7">
+               <?php echo form_dropdown('office_supply_accounts', $all_accounts_head, '','class="form-control boot-dropdown" data-live-search="true" data-size="5" '); ?> 
+               <?php echo form_error("office_supply_accounts"); ?> 
+            </div>
+         </div>
+      </div>
+      
+      
       <div class="col-md-12">
+           <div class="form-group options_service">
+           <hr>  
+		         <div class="col-md-1">
+		            <input  type="checkbox" name="options_service" id="options_service" data-size="small" data-flag="">	           
+		         </div>
+		         <label class="col-md-11 control-label">This service is used in assemblies or is performed by a subcontractor</label>
+		         <hr>
+		      </div>
+		  <div class="form-group options_non_inventory">
+           <hr>  
+		         <div class="col-md-1">
+		            <input  type="checkbox" name="options_non_inventory" id="options_non_inventory" data-size="small" data-flag="">	           
+		         </div>
+		         <label class="col-md-11 control-label">The item is used in assembles</label>
+		         <hr>
+		      </div>                 
+      </div>
+      
+      
+      
+      <!-- End of Column 3 -->
+      <div class="col-md-12 bill_of_materials">
       <hr>
       <div class="content-title-2">Bill of Materials</div>
       <div style="max-height:350px;overflow: auto; border:1px solid #EEE; ">
@@ -215,9 +272,9 @@
                      </div>
                      <!-- /input-group -->
                   </td>
-                  <td><input type="text" name="cost[]" class="f-control cost"></td>
-                  <td><input type="text" name="quantity[]" class="f-control quantity"></td>
-                  <td><input type="text" name="total[]" class="f-control total"></td>                  
+                  <td class="col-md-2"><input type="text" name="cost[]" class="f-control cost"></td>
+                  <td class="col-md-2"><input type="text" name="quantity[]" class="f-control quantity"></td>
+                  <td class="col-md-2"><input type="text" name="total[]" class="f-control total"></td>                  
                </tr>
                
             </tbody>
@@ -225,24 +282,148 @@
         </div> 
       </div>
    </div>
-
+</div>
 </form>
 
 <script>
    $(function() {
    
-   	$("#inventoryInformation").hide();	
-       $( ".item-type" ).change(function() {
-   			
-           if( ( this.value == 2) || ( this.value == 3) )
-           {  
-   			$("#inventoryInformation").show();
+   	$("#inventoryInformation").hide();
+   	$('#item_information').hide(); 
+   	$(".options_service").hide();
+   	$(".bill_of_materials").hide();
+   	$(".expense").hide();
+   	$('.purchase').hide();
+   	$('.sales').hide();
+   	$('#right-column').hide();
+   	
+   	
+    // Has Sub Item
+    $('#has_subitem').change(function() {
+        if($(this).is(":checked")) 
+        {           
+        	$('#item_information').show();
+        	$('#right-column').show();  
+        }
+        else
+        {
+        	//$("#inventoryInformation").hide();
+        	$("#item_information").hide();
+           	$('#right-column').hide();           	
+        }
+              
+    });
+	
+   
+    $( ".item-type" ).change(function() {
+
+    	//UnCheck Checkbox Options
+    	$('#options_non_inventory').data('flag',0);
+ 	 	$('#options_service').data('flag', 0); 	 		   	 	    
+ 	 
+ 	 	$('#options_service').bootstrapToggle('off'); 	 	
+ 	 	$('#options_non_inventory').bootstrapToggle('off');
+ 	 	
+ 	 	$('#options_non_inventory').data('flag',1);
+ 	 	$('#options_service').data('flag', 1);
+ 	 	 
+           // Service
+           if(this.value == 1)
+           {           
+        	   hideAllItems();       	  
+        	   $('.sales').show();       	  
+			   $('.options_service').show();			  
+			   removeAllInputValues(); 
+			   
+			  		
+           }
+           // Inventory Part
+           else if(this.value == 2)
+           {          	    
+        	   hideAllItems();
+        	  $('.sales').show();
+        	  $('.purchase').show();
+        	  $("#inventoryInformation").show(); 
+        	  removeAllInputValues(); 		  		
+           }
+
+        // Inventory Assembly
+           else if(this.value == 3)
+           {         	  
+        	  hideAllItems();               
+        	  $('.sales').show();
+        	  $('.purchase').show();
+        	  $("#inventoryInformation").show();			 
+			  $(".bill_of_materials").show();
+			  removeAllInputValues();  
+			  		
+           }
+        // Non Inventory
+           else if(this.value == 4)
+           {     
+        	   
+        	   hideAllItems();
+        	   $('.options_non_inventory').show(); 
+        	   $('.office_supply').show();
+        	   removeAllInputValues();   		  		
            }
            else
            {
-           	$("#inventoryInformation").hide();
-           }	             
-       });
+				// No duty
+           }
+          
+     });
+
+	// Service Option
+    $('#options_service').change(function() {
+
+    	var flag = $('#options_service').data('flag');
+
+    	if(flag == 1)
+    	{
+	        if($(this).is(":checked")) 
+	        {                    
+	        	$('.purchase').show();
+	        	$('.expense').show(); 
+	        	$('.cogs').hide();
+	        	removeAllInputValues(); 
+	        }
+	        else
+	        {        	
+	        	$('.purchase').hide();
+	        	$('.expense').hide();
+	        	$('.cogs').show(); 
+	        	removeAllInputValues(); 
+	        }
+    	}   
+              
+    });
+
+ // Non Inventory Option
+    $('#options_non_inventory').change(function() {
+
+    	var flag = $('#options_non_inventory').data('flag');
+
+    	if(flag == 1)
+    	{
+	        if($(this).is(":checked")) 
+	        {           	  	
+	        	$('.office_supply').hide();
+	        	$('.transactionalRegular').show();
+	        	remove_InputValues(".office_supply");          
+	        }
+	        else
+	        {
+	        	
+	        	$('.office_supply').show();
+	        	$('.transactionalRegular').hide();
+	        	remove_InputValues(".transactionalRegular");
+	        	 
+	        }
+    	} 
+              
+    });        
+    
 
 
        $(".quantity").TouchSpin();
@@ -253,10 +434,55 @@
            boostat: 5,
            maxboostedstep: 10, 
                      
-       });    	 
+       }); 
+
+	   function hideAllItems()
+	   {
+		   var Inputcontainers = [".sales",".purchase", ".options_service", ".bill_of_materials",".options_non_inventory", 
+		               		   		".office_supply", "#inventoryInformation"];
+		   for (var i = 0; i < Inputcontainers.length; i++) 
+           {
+			   $(Inputcontainers[i]).hide();
+           }
+	   }	
+
+       function removeAllInputValues()
+       {   
+           var Inputcontainers = [".sales",".purchase", "#item_information", "#bill_of_materials",".office_supply"];
+    	   var arrayLength = Inputcontainers.length;
+    	   for (var i = 0; i < arrayLength; i++) 
+           {
+	      	     var $element = Inputcontainers[i];
+	      	     $($element).children().find('input, textarea').each(function(){
+	    		   $(this).val('');    		   
+	    		 });   	   
+
+	    	    $($element).children().find('option:selected').each(function(){        	 
+	    		   $(this).prop("selected", false);	 
+	    		   $('.boot-dropdown').selectpicker('refresh');  
+	    		});	    	    
+    	   }   	  
+       }
+       function remove_InputValues($element)
+       {   
+    	   var $element = Inputcontainers[i];
+
+    	   $($element).children().find('input, textarea').each(function(){
+  		   		$(this).val('');    		   
+  		 	});   	   
+
+  	    	$($element).children().find('option:selected').each(function(){        	 
+  		   		$(this).prop("selected", false);	 
+  		   	$('.boot-dropdown').selectpicker('refresh');  
+  			});	    	      
+       }
+    	       
     	       
        
    });
+
+
+   
 </script>
 
 <!-- Code -->

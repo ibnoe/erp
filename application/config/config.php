@@ -59,6 +59,7 @@ $config['base_url'] = 'http://localhost/erp/';
 $config['asset_group_id'] 		= '1';
 $config['cogs_group_id'] 		= '6';
 $config['income_group_id'] 		= '4';
+$config['expense_group_id'] 	= '5';
 
 /*
 |--------------------------------------------------------------------------
