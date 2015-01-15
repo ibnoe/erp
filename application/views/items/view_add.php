@@ -56,11 +56,13 @@
    
     height: 27px !important;
    	padding: 2px 10px;
-   }  
+   } 
+
 
    
 </style>
-<form role="form" name="myForm" class="form-horizontal" enctype="multipart/form-data" action="" method="post" autocomplete="off" >
+
+<form role="form" id="myForm" name="myForm" class="form-horizontal" enctype="multipart/form-data" action="<?php echo base_url("items/add") ?>" method="post" autocomplete="off" >
    <!-- Row 1 -->
    <!-- Column 1 -->
    <div class="col-md-3">
@@ -82,7 +84,7 @@
       <div class="form-group">
          <label class="col-md-5 control-label">Item Name</label>
          <div class="col-md-7">
-            <input type="text" class="form-control input-sm"  name="item_name" id="item_name" value="<?php echo set_value("item_name"); ?>" >  
+            <input type="text" class="form-control"  name="item_name" id="item_name" value="<?php echo set_value("item_name"); ?>" >  
             <?php echo form_error("item_name"); ?> 
          </div>
       </div>
@@ -154,11 +156,11 @@
       <!-- Column 2 -->
       <div  class="col-md-6 purchase transactionalRegular"> 
          <div class="content-title">Purchase</div>
-         <div class="form-group">
+         <div class="form-group purchase_cost">
             <label class="col-md-5 control-label">Cost</label>
             <div class="col-md-7">
-               <input type="text" class="form-control currency"  name="cost" id="cost" value="<?php echo set_value("cost"); ?>" >  
-               <?php echo form_error("cost"); ?> 
+               <input type="text" class="form-control currency"  name="purchase_cost" id="cost" value="<?php echo set_value("purchase_cost"); ?>" >  
+               <?php echo form_error("purchase_cost"); ?> 
             </div>
          </div>
          <div class="form-group cogs">
@@ -183,7 +185,7 @@
          <div class="form-group">
             <label class="col-md-5 control-label">Price</label>
             <div class="col-md-7">
-               <input type="text" class="form-control input-sm currency"  name="price" id="price" value="<?php echo set_value("price"); ?>" >  
+               <input type="text" class="form-control currency"  name="price" id="price" value="<?php echo set_value("price"); ?>" >  
                <?php echo form_error("price"); ?> 
             </div>
          </div>
@@ -237,9 +239,10 @@
       
       <!-- End of Column 3 -->
       <div class="col-md-12 bill_of_materials">
+      <input type="hidden" name="bill_of_materials">
       <hr>
       <div class="content-title-2">Bill of Materials</div>
-      <div style="max-height:350px;overflow: auto; border:1px solid #EEE; ">
+      <div style="">
          <table class="table table-striped" id="bill_of_materials">
             <thead>
                <tr>
@@ -272,12 +275,19 @@
                      </div>
                      <!-- /input-group -->
                   </td>
-                  <td class="col-md-2"><input type="text" name="cost[]" class="f-control cost"></td>
+                  <td class="col-md-2"><input type="text" name="cost[]" class="f-control cost" disabled></td>
                   <td class="col-md-2"><input type="text" name="quantity[]" class="f-control quantity"></td>
-                  <td class="col-md-2"><input type="text" name="total[]" class="f-control total"></td>                  
-               </tr>
-               
+                  <td class="col-md-2"><input type="text" name="total[]" class="f-control total" disabled></td>                  
+               </tr>               
             </tbody>
+            <tfoot>
+		            <tr>
+					      <th></th>
+					      <th><input type="hidden" name="complete_total" class="complete_total" /></th>
+					      <th>Total</th>
+					      <th id="complete_total"></th>
+		    		</tr>
+            </tfoot>
          </table>
         </div> 
       </div>
@@ -286,7 +296,7 @@
 </form>
 
 <script>
-   $(function() {
+$(function() {
    
    	$("#inventoryInformation").hide();
    	$('#item_information').hide(); 
@@ -326,7 +336,17 @@
  	 	
  	 	$('#options_non_inventory').data('flag',1);
  	 	$('#options_service').data('flag', 1);
- 	 	 
+
+ 	 	if(this.value == 3)
+        {
+				$(".purchase_cost").hide();
+				$(".purchase .content-title").text("Expense");
+        }
+        else
+        {
+        	   $(".purchase_cost").show();
+			   $(".purchase .content-title").text("Purhcase");
+        }
            // Service
            if(this.value == 1)
            {           
@@ -371,6 +391,7 @@
            {
 				// No duty
            }
+           
           
      });
 
@@ -477,9 +498,45 @@
   			});	    	      
        }
     	       
-    	       
+       <!-- Reload Page On Success After the submit button is clicked -->
+       $('#modalButton').on('click', function(){
+         
+       	  	if(	$(this).data('sucess') == 1)
+       	  	{
+       	  	    $(".modal-text").append("Page reloading ...");
+       	  		location.reload();
+       	  	}	   	
+       });
+
+       // Adding Total
+       MoneyOptions = {
+   			symbol : "Tk ",
+   			decimal : ".",
+   			thousand: ",",
+   			precision : 2,
+   			format: "%s%v"
+   		};
+
+       $('body').bind('keyup', ":input[name='quantity[]']" , function() {             
+      
+    	    var totalamount = 0;
+    	    $("#bill_of_materials tbody tr").each(function() {    	    	
+    	    	var product_id = $(this).find(":input[name='product_id[]']").val() || 0;    	    	
+    	    	if(product_id != 0)
+    	    	{
+	    	        var quantity = +$(this).find(":input[name='quantity[]']").val() || 0;
+	    	        var rate = +$(this).find(":input[name='cost[]']").val() || 0;
+	    	        var subtotal = accounting.unformat(quantity) * accounting.unformat(rate);
+	    	        $(this).find(":input[name='total[]']").val( accounting.formatMoney(subtotal, MoneyOptions) );
+	    	        totalamount += subtotal;    
+    	    	}
+    	    });    	  
+    	  $("#complete_total").html( accounting.formatMoney(totalamount, MoneyOptions)  );    	      
+    	  $(".complete_total").val(totalamount);
+    	});    
+      // End of Adding Total 
        
-   });
+});
 
 
    
@@ -487,13 +544,13 @@
 
 <!-- Code -->
 <script>
-$('body').on('focus', '.product', function() {
+$('body').on('focus', '.product, .quantity', function() {
     
     var b = $(this).closest('tr').nextAll().length;   
-    if(b < 3)
+    if(b < 1)
     {
         $("#bill_of_materials").find("tbody").find("tr:last");    
-        for(var i=0;i<3;i++)
+        for(var i=0; i<1 ;i++)
         {
           var $newTr = $('#dbtable tr:last').clone();     
           $("#bill_of_materials").find("tbody").append($newTr);
@@ -513,6 +570,9 @@ $('body').on('click', '.dropdown-menu li a', function(event) {
 	   row.find(".cost").val(cost);	   
  	
 	 });
+
+
+
 
 </script>
 <table id="dbtable" style="display:none">
@@ -538,8 +598,72 @@ $('body').on('click', '.dropdown-menu li a', function(event) {
          </div>
          <!-- /input-group -->
       </td>
-      <td><input type="text" name="cost[]" class="f-control cost"></td>
+      <td><input type="text" name="cost[]" class="f-control cost" disabled></td>
       <td><input type="text" name="quantity[]" class="f-control quantity"></td>
-      <td><input type="text" name="total[]" class="f-control total"></td>
+      <td><input type="text" name="total[]" class="f-control total" disabled></td>
    </tr>
 </table>
+<script>
+//prepare the form when the DOM is ready 
+$(function() {	
+	
+    var options = { 
+        //target:        '#form-submit-status',   // target element(s) to be updated with server response 
+        beforeSubmit:  showRequest,  // pre-submit callback 
+        success:       showResponse,  // post-submit callback 
+        //resetForm: true, 
+    }; 
+ 
+    // bind form using 'ajaxForm' 
+    $('#myForm').ajaxForm(options); 
+}); 
+ 
+// pre-submit callback 
+function showRequest(formData, jqForm, options) { 
+   
+	$('#FormSubmisionResponse').modal({
+	    backdrop: 'static',
+	    keyboard: false
+	});		
+    return true; 
+} 
+ 
+// post-submit callback 
+function showResponse(responseText, statusText, xhr, $form)  { 
+
+	$(".modal-title").html("");
+	$(".modal-text").append("");
+	
+	if(responseText == "Successfully Added")
+	{
+		$(".modal-title").html("Status");
+		$(".modal-text").html("Successfully Added");
+		$("#modalButton").data('sucess', 1);		
+	}
+	else
+	{
+		$(".modal-title").html("Validation Error");
+		$(".modal-text").html(responseText);
+	}  
+}
+
+
+</script>
+
+<!-- Delete Confirm Dialog -->
+<div class="modal fade" id="FormSubmisionResponse" role="dialog" aria-labelledby="FormSubmisionResponse" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Status</h4>
+      </div>
+      <div class="modal-body">
+        <p class="modal-text">Please wait, data is beign processing ...</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" id="modalButton" data-sucess="">Ok</button>       
+      </div>
+    </div>
+  </div>
+</div>

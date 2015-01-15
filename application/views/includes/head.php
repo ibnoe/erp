@@ -36,7 +36,7 @@
 <script type="text/javascript" src="<?php echo base_url();?>assets/switch/js/bootstrap-toggle.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/bootDropdown/js/bootstrap-select.min.js"></script>
 <script type="text/javascript" src="<?php echo base_url();?>assets/inputSpinner/jquery.bootstrap-touchspin.js"></script> 
-
+<script type="text/javascript" src="<?php echo base_url();?>assets/js/accounting.js"></script>
 
 </head>
 <body>  

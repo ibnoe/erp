@@ -101,8 +101,7 @@ $(function() {
     $('#options_non_inventory').bootstrapToggle({
         on: 'Yes',
         off: 'No'
-      });
-    
+      });  
     
     
     //Styling Dropdown
