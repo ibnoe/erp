@@ -55,8 +55,7 @@ class Items extends CI_Controller {
        			$this->form_validation->set_rules('income_accounts', 'Income', "required");
        			$this->form_validation->set_rules('asset_account', 'Asset Account', "required");
        			$this->form_validation->set_rules('reorder_level', 'Reorder Level', "required");
-       			$this->form_validation->set_rules('on_hand', 'On Hand', "required");
-       			$this->form_validation->set_rules('total_value', 'Total Value', "required");
+
        			
        			$product_id = $this->input->post('product_id');
        			$cost = $this->input->post('cost');
@@ -65,21 +64,25 @@ class Items extends CI_Controller {
        			
        			if(count($product_id) > 0)
        			{
-       				$error = 0;
+       				$err = 0;
        				for($i = 0; $i < count($product_id) ; $i++)
        				{
-       					if($product_id[$i] != "")
+       					if(!empty($product_id[$i]))
        					{
-	       					$error += ( empty($cost[$i])? 1 : 0) ;
-	       					$error += ( empty($quantity[$i])? 1 : 0) ;
-	       					$error += ( empty($total[$i])? 1 : 0) ;
+	       					$err += ( empty($cost[$i])? 1 : 0) ;
+	       					$err += ( empty($quantity[$i])? 1 : 0) ;
+	       					$err += ( empty($total[$i])? 1 : 0) ;
        					}	
        				}
-       				if($error > 0)
+       				if($err > 0)
        				{
        					$this->form_validation->set_rules('bill_of_materials', 'Total Value', 'callback_customRule' );       					
        				}
        				
+       			}
+       			else 
+       			{
+       				$this->form_validation->set_rules('bill_of_materials', 'Total Value', 'callback_customRule' );
        			}       			
        		}       		
        		elseif($this->input->post('item_type_id') == 4) // 1 = // Non Inventory
@@ -104,13 +107,18 @@ class Items extends CI_Controller {
 			
 	       	if( $this->input->is_ajax_request() )
 	       	{
-	       		echo validation_errors();       		
+	       		echo validation_errors();
+	            		
 	       	}
 	       	else
 	       	{
-	       		$this->load->model('dropdown_items');       		 
+	       		$this->load->model('dropdown_items');
+	       		$this->load->model('mod_items');
+	       		
 	       		$data['dropdown_item_types']= $this->dropdown_items->create_dropdown('cx_item_types', 'item_type_id', 'item_type_name', 'Select an item type' );
-	       		$data['dropdown_items']	= $this->dropdown_items->create_dropdown('cx_items', 'item_id', 'item_name', 'None' );
+	       		$data['dropdown_parent_items']	= $this->dropdown_items->create_dropdown('cx_items', 'item_id', 'item_name', 'None', array('has_subitem'=> 1) );
+	       		$data['dropdown_items']	= $this->mod_items->get_product_items_with_price();
+	       		
 	       		$data['dropdown_units']	= $this->dropdown_items->create_dropdown('cx_units', 'unit_id', 'unit_name', 'Select an unit' );	       		
 	       		$data['all_accounts_head']	= $this->dropdown_items->create_dropdown('cx_account_heads', 'acc_id', 'account_name', 'Select an account' );
 	       		$data['cogs_accounts'] = $this->dropdown_items->get_account_heads( $this->config->item('cogs_group_id') );
@@ -128,7 +136,9 @@ class Items extends CI_Controller {
        { 
        		$this->load->model('mod_items');
        		$this->mod_items->add();
-       	    echo "Successfully Added" ;      
+       	    echo "Successfully Added" ; 
+       		/* echo "<pre>";     
+       		print_r(($_POST)); */
        } 
    }
 
@@ -186,10 +196,21 @@ class Items extends CI_Controller {
    }
    
    
-   public function customRule()
+   function customRule()
    {
 	   	$this->form_validation->set_message('customRule', 'Fill up the Bill of Materials Form Correctly');
 	   	return FALSE;
    }
-
+   
+   function deleteTable()
+   {
+   		$this->db->query('DELETE FROM cx_items');
+   		$this->db->query('DELETE FROM cx_item_details');
+   		$this->db->query('DELETE FROM cx_item_purchase');
+   		$this->db->query('DELETE FROM cx_item_sales');
+   		$this->db->query('DELETE FROM cx_item_bill_of_materials');
+   		$this->db->query('DELETE FROM cx_item_inventory');
+   		
+   }
+   
 }

@@ -1,10 +1,16 @@
 <?php
 class Dropdown_items extends CI_Model{
 	
-	public function create_dropdown($table, $id, $name, $select_text )
+	public function create_dropdown($table, $id, $name, $select_text, Array $whereQuery = NULL )
 	{
-		$records = $this->db->select("$id, $name")->get($table);	
-				
+		if(is_array($whereQuery))
+		{
+			$records = $this->db->select("$id, $name")->where($whereQuery)->get($table);
+		}
+		else 
+		{
+			$records = $this->db->select("$id, $name")->get($table);		
+		}				
 		$data[''] = $select_text ;
 
 		if($records->num_rows() > 0 )
@@ -35,6 +41,7 @@ class Dropdown_items extends CI_Model{
 		}
 		return $data;		
 	}
+	
 	
 	
 }

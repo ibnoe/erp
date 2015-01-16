@@ -146,7 +146,7 @@
     $overlay.css({
       'min-height': windowHeight,
     });
-    console.log(value);
+    //console.log(value);
   },
   toggle: function(init,options){
     var $this = $(this);

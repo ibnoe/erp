@@ -77,7 +77,7 @@
       <div class="form-group">
          <label class="col-md-5 control-label">Subitem of</label>
          <div class="col-md-7">
-            <?php echo form_dropdown('parent_item_id', $dropdown_items, '','class="form-control boot-dropdown"'); ?> 
+            <?php echo form_dropdown('parent_item_id', $dropdown_parent_items, '','class="form-control boot-dropdown"'); ?> 
             <?php echo form_error("parent_item_id"); ?> 
          </div>
       </div>
@@ -243,6 +243,7 @@
       <hr>
       <div class="content-title-2">Bill of Materials</div>
       <div style="">
+      <?php if(count($dropdown_items) > 0) :?>
          <table class="table table-striped" id="bill_of_materials">
             <thead>
                <tr>
@@ -257,16 +258,11 @@
                   <td class="col-md-6">
                      <div class="input-group">
                         <div class="input-group-btn">
-                           <div class="btn btn-default dropdown-toggle product dropdownMenu1" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></div>                          
-                           <ul class="dropdown-menu" role="menu" style="max-height:100px;overflow: auto;">                             	                                         	          
-                              <li><a href="#" data-id="1" data-cost="200">Action Separated link Separated link</a></li>
-                              <li><a href="#" data-id="2" data-cost="250">Another action</a></li>
-                              <li><a href="#" data-id="3" data-cost="120">Something else here</a></li>                              
-                              <li><a href="#">Separated link</a></li>
-                              <li><a href="#">Action</a></li>
-                              <li><a href="#">Another action</a></li>
-                              <li><a href="#">Something else here</a></li>                              
-                              <li><a href="#">Separated link</a></li>
+                           <div class="btn btn-default dropdown-toggle product dropdownMenu1" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></div>                  
+                           <ul class="dropdown-menu" role="menu" style="max-height:100px;overflow: auto;">                            	                                         	          
+                              <?php foreach ($dropdown_items as $row) { ?>
+                              <li><a href="#" data-id="<?php echo $row['item_id']?>" data-cost="<?php echo $row['price']?>"><?php echo $row['item_name']?></a></li>                              
+                              <?php }?>
                            </ul>
                         </div>
                         <!-- /btn-group -->
@@ -275,9 +271,9 @@
                      </div>
                      <!-- /input-group -->
                   </td>
-                  <td class="col-md-2"><input type="text" name="cost[]" class="f-control cost" disabled></td>
+                  <td class="col-md-2"><input type="text" name="cost[]" class="f-control cost"></td>
                   <td class="col-md-2"><input type="text" name="quantity[]" class="f-control quantity"></td>
-                  <td class="col-md-2"><input type="text" name="total[]" class="f-control total" disabled></td>                  
+                  <td class="col-md-2"><input type="text" name="total[]" class="f-control total"></td>                  
                </tr>               
             </tbody>
             <tfoot>
@@ -289,6 +285,8 @@
 		    		</tr>
             </tfoot>
          </table>
+         <?php else: echo "No items to add";?>
+         <?php endif;?>
         </div> 
       </div>
    </div>
@@ -297,14 +295,23 @@
 
 <script>
 $(function() {
+
+	$('html').bind('keypress', function(e){
+		if(e.keyCode == 13)
+		{
+		    return false;
+		}
+	});
    
    	$("#inventoryInformation").hide();
    	$('#item_information').hide(); 
    	$(".options_service").hide();
+	$(".options_non_inventory").hide();
    	$(".bill_of_materials").hide();
    	$(".expense").hide();
    	$('.purchase').hide();
    	$('.sales').hide();
+   	$('.office_supply').hide();
    	$('#right-column').hide();
    	
    	
@@ -448,14 +455,20 @@ $(function() {
 
 
        $(".quantity").TouchSpin();
-       $(".currency").TouchSpin({
-           min: 0,           
+       /* $(".currency").TouchSpin({
+          /*  min: 0,           
            step: 1,
-           decimals: 2,
-           boostat: 5,
-           maxboostedstep: 10, 
+           decimals: 2, 
+           //boostat: 5,
+           //maxboostedstep: 10,
+    	   min: 1,
+           max: 1000000000,
+           stepinterval: 50,
+           maxboostedstep: 10000000,
+            
                      
-       }); 
+       });  */
+       $('.currency').number( true, 2 );
 
 	   function hideAllItems()
 	   {
@@ -575,6 +588,7 @@ $('body').on('click', '.dropdown-menu li a', function(event) {
 
 
 </script>
+<?php if (count($dropdown_items) > 0) :?>
 <table id="dbtable" style="display:none">
    <tr>
       <td class="col-md-6">
@@ -582,14 +596,9 @@ $('body').on('click', '.dropdown-menu li a', function(event) {
             <div class="input-group-btn">
                <div class="btn btn-default dropdown-toggle product dropdownMenu1" data-toggle="dropdown" aria-expanded="true"><span class="caret"></span></div>
                <ul class="dropdown-menu" role="menu" style="max-height:100px;overflow: auto;">
-                 <li><a href="#" data-id="1" data-cost="200">Action Separated link Separated link</a></li>
-                 <li><a href="#" data-id="2" data-cost="250">Another action</a></li>
-                 <li><a href="#" data-id="3" data-cost="120">Something else here</a></li> 
-                  <li><a href="#">Separated link</a></li>
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li><a href="#">Separated link</a></li>
+                  <?php foreach ($dropdown_items as $row) { ?>
+                     <li><a href="#" data-id="<?php echo $row['item_id']?>" data-cost="<?php echo $row['price']?>"><?php echo $row['item_name']?></a></li>                              
+                   <?php }?>
                </ul>
             </div>
             <!-- /btn-group -->
@@ -598,11 +607,13 @@ $('body').on('click', '.dropdown-menu li a', function(event) {
          </div>
          <!-- /input-group -->
       </td>
-      <td><input type="text" name="cost[]" class="f-control cost" disabled></td>
+      <td><input type="text" name="cost[]" class="f-control cost"></td>
       <td><input type="text" name="quantity[]" class="f-control quantity"></td>
-      <td><input type="text" name="total[]" class="f-control total" disabled></td>
+      <td><input type="text" name="total[]" class="f-control total"></td>
    </tr>
 </table>
+<?php endif;?>
+
 <script>
 //prepare the form when the DOM is ready 
 $(function() {	

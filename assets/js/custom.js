@@ -91,8 +91,8 @@ $(function() {
     
     // CheckBoxes 
     $('#has_subitem').bootstrapToggle({
-        on: 'Yes',
-        off: 'No'
+        on: 'No',
+        off: 'Yes'
       });
     $('#options_service').bootstrapToggle({
         on: 'Yes',

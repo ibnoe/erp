@@ -1,5 +1,11 @@
 @import url("bootstrap.min.css");
-@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(1.woff2) format('woff2'), url(2.woff) format('woff');
+}
 
 body {
 font-family:'Open Sans', sans-serif!important;

@@ -11,6 +11,7 @@ class Mod_items extends CI_Model {
    {
 
    	extract($_POST);
+   	$has_subitem = ( $this->input->post('has_subitem') == 'on' ? 0 : 1 );
    	
    	$data = array(
 		'item_id' => '',
@@ -18,6 +19,7 @@ class Mod_items extends CI_Model {
 		'parent_item_id' => $parent_item_id,
 		'item_name' => $item_name,
 		'has_subitem' => $has_subitem,
+   		'entry_by'	  => $this->authex->get_user_id()		
 	);
 	$this->db->insert('cx_items', $data);
 	$item_id = $this->db->insert_id();
@@ -25,8 +27,8 @@ class Mod_items extends CI_Model {
     if ( $this->input->post('has_subitem') == 'on')
 	{
 		$this->form_validation->set_rules('unit_id', 'Unit', "required");
-		$this->form_validation->set_rules('item_code', 'Item Code', "required");
-	
+		$this->form_validation->set_rules('item_code', 'Item Code', "required");			
+		
 		// Service
 	
 		if ($this->input->post('item_type_id') == 1) // 1 = Service
@@ -39,17 +41,17 @@ class Mod_items extends CI_Model {
 						'item_id' => $item_id,
 						'unit_id' => $unit_id,
 						'item_code' => $item_code,
-						'item_option_id' => $options_service,
+						'item_option_id' => 1, // see cx_item_options table
 				);
 				$item_purchase = array(
 						'id' => '',
-						'cost' => $purchase_cost,
+						'cost' => currency_to_number($purchase_cost) ,
 						'account_to_debit' => $expense_account,
 						'item_id' => $item_id,						
 				);
 				$item_sales = array(
 						'id' => '',
-						'price' => $price,
+						'price' => currency_to_number($price) ,
 						'account_to_credit' => $income_accounts,
 						'item_id' => $item_id,
 				);				
@@ -71,7 +73,7 @@ class Mod_items extends CI_Model {
 				);
 				$item_sales = array(
 						'id' => '',
-						'price' => $price,
+						'price' => currency_to_number($price) ,
 						'account_to_credit' => $income_accounts,
 						'item_id' => $item_id,
 				);
@@ -83,15 +85,7 @@ class Mod_items extends CI_Model {
 		}
 		elseif ($this->input->post('item_type_id') == 2) // 2 = Inventory Part
 		{
-			$this->form_validation->set_rules('purchase_cost', 'Cost', "required");
-			$this->form_validation->set_rules('cogs_account', 'COGS', "required");
-			$this->form_validation->set_rules('price', 'Price', "required");
-			$this->form_validation->set_rules('income_accounts', 'Income', "required");
-			$this->form_validation->set_rules('asset_account', 'Asset Account', "required");
-			$this->form_validation->set_rules('reorder_level', 'Reorder Level', "required");
-			$this->form_validation->set_rules('on_hand', 'On Hand', "required");
-			$this->form_validation->set_rules('total_value', 'Total Value', "required");
-						
+					
 			// Binding Data
 			$item_details = array(
 					'item_details_id' => '',
@@ -102,13 +96,13 @@ class Mod_items extends CI_Model {
 			);
 			$item_purchase = array(
 					'id' => '',
-					'cost' => $purchase_cost,
+					'cost' => currency_to_number($purchase_cost)  ,
 					'account_to_debit' => $cogs_account,
 					'item_id' => $item_id,
 			);
 			$item_sales = array(
 					'id' => '',
-					'price' => $price,
+					'price' => currency_to_number($price) ,
 					'account_to_credit' => $income_accounts,
 					'item_id' => $item_id,
 			);
@@ -138,13 +132,13 @@ class Mod_items extends CI_Model {
 
 			$item_purchase = array(
 					'id' => '',
-					'cost' => $complete_total,
+					'cost' => currency_to_number($complete_total) ,
 					'account_to_debit' => $cogs_account,
 					'item_id' => $item_id,
 			);
 			$item_sales = array(
 					'id' => '',
-					'price' => $price,
+					'price' => currency_to_number($price),
 					'account_to_credit' => $income_accounts,
 					'item_id' => $item_id,
 			);	
@@ -154,6 +148,12 @@ class Mod_items extends CI_Model {
 					'reorder_level' => $reorder_level,
 					'item_id' => $item_id,
 			);
+			
+			//Inserting Into Database Table
+			$this->db->insert('cx_item_details', $item_details);
+			$this->db->insert('cx_item_purchase', $item_purchase);
+			$this->db->insert('cx_item_sales', $item_sales);
+			$this->db->insert('cx_item_inventory', $item_inventory);
 			
 			$product_id 	= $this->input->post('product_id');
 			$cost 			= $this->input->post('cost');
@@ -172,7 +172,7 @@ class Mod_items extends CI_Model {
 								'item_id' 	=> $product_id[$i],
 								'cost' 		=> $cost[$i],
 								'quantity' 	=> $quantity[$i],
-								'total'		=> $total[$i],
+								'total'		=> currency_to_number( $total[$i] ),
 								'parent_item_id	'=> $item_id
 						);				
 						//Inserting Into Database Table
@@ -186,19 +186,13 @@ class Mod_items extends CI_Model {
 		{
 			if ($this->input->post('options_non_inventory') == 'on')
 			{
-				$this->form_validation->set_rules('purchase_cost', 'Cost', "required");
-				$this->form_validation->set_rules('cogs_account', 'COGS', "required");
-				$this->form_validation->set_rules('price', 'Price', "required");
-				$this->form_validation->set_rules('income_accounts', 'Income', "required");
-				
-				
 				// Binding Data
 				$item_details = array(
 						'item_details_id' => '',
 						'item_id' => $item_id,
 						'unit_id' => $unit_id,
 						'item_code' => $item_code,
-						'item_option_id' => $options_non_inventory,
+						'item_option_id' => 2, // see cx_item_options table
 				);
 				$item_purchase = array(
 						'id' => '',
@@ -223,33 +217,29 @@ class Mod_items extends CI_Model {
 			{
 				$this->form_validation->set_rules('office_supply_price', 'Price', "required");
 				$this->form_validation->set_rules('office_supply_accounts', 'Accounts', "required");
+				
+				// Binding Data
+				$item_details = array(
+						'item_details_id' => '',
+						'item_id' => $item_id,
+						'unit_id' => $unit_id,
+						'item_code' => $item_code,
+						'item_option_id' => NULL,
+				);
+				$item_sales = array(
+						'id' => '',
+						'price' => $office_supply_price,
+						'account_to_credit' => $office_supply_accounts,
+						'item_id' => $item_id,
+				);
+				//Inserting Into Database Table
+				$this->db->insert('cx_item_details', $item_details);			
+				$this->db->insert('cx_item_sales', $item_sales);
+				
 			}
 		}
 	}
-   	
-       $data = array(
-          'item_id' => '',
-	       'item_type_id' => $item_type_id,
-	       'parent_item_id' => $parent_item_id,
-	       'item_name' => $item_name,
-	       'has_subitem' => $has_subitem,
-	       'unit_id' => $unit_id,
-	       'item_code' => $item_code,
-	       'is_active' => $is_active,
-	       'asset_account' => $asset_account,
-	       'reorder_level' => $reorder_level,
-	       'on_hand' => $on_hand,
-	       'total_value' => $total_value,
-	       'description_purchase' => $description_purchase,
-	       'cost' => $cost,
-	       'cogs_account' => $cogs_account,
-	       'description_sales' => $description_sales,
-	       'price' => $price,
-	       'income_account' => $income_account,
-	       'tax_code_id' => $tax_code_id,
-       );
-       $this->db->insert('cx_items', $data);
-       if($this->db->affected_rows() > 0)
+   	   if($this->db->affected_rows() > 0)
        { 
          return TRUE;
        } 
@@ -348,5 +338,18 @@ class Mod_items extends CI_Model {
          return FALSE;
        }
    }
+
+   function get_product_items_with_price()
+   {
+	   	$sql = "SELECT cx_items.item_id, item_name, price FROM cx_items
+					LEFT JOIN cx_item_sales ON cx_item_sales.item_id = cx_items.item_id
+					WHERE has_subitem = ? ORDER BY item_name ASC";
+	   	$getData = $this->db->query($sql, array( 0 )); // 0 Means it has no subitem and it is a complete product	   
+	   	if($getData->num_rows() > 0)
+	   		return $getData->result_array();
+	   	else
+	   	return null;
+   }
+   
 
 }
