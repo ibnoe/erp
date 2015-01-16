@@ -15,6 +15,7 @@ class Items extends CI_Controller {
        $this->form_validation->set_rules('item_type_id', 'Item Type', "required");
        $this->form_validation->set_rules('item_name', 'Item Name', "required");
        
+       $this->form_validation->set_value('item_name',  "name");
        
        if($this->input->post('has_subitem') == 'on')
        {
@@ -114,11 +115,11 @@ class Items extends CI_Controller {
 	       	{
 	       		$this->load->model('dropdown_items');
 	       		$this->load->model('mod_items');
+	       			       		
+	       		$data['parent_item_types']	= $this->mod_items->get_parent_item_type();
 	       		
-	       		$data['dropdown_item_types']= $this->dropdown_items->create_dropdown('cx_item_types', 'item_type_id', 'item_type_name', 'Select an item type' );
-	       		$data['dropdown_parent_items']	= $this->dropdown_items->create_dropdown('cx_items', 'item_id', 'item_name', 'None', array('has_subitem'=> 1) );
 	       		$data['dropdown_items']	= $this->mod_items->get_product_items_with_price();
-	       		
+	       		$data['dropdown_item_types']= $this->dropdown_items->create_dropdown('cx_item_types', 'item_type_id', 'item_type_name', 'Select an item type' );
 	       		$data['dropdown_units']	= $this->dropdown_items->create_dropdown('cx_units', 'unit_id', 'unit_name', 'Select an unit' );	       		
 	       		$data['all_accounts_head']	= $this->dropdown_items->create_dropdown('cx_account_heads', 'acc_id', 'account_name', 'Select an account' );
 	       		$data['cogs_accounts'] = $this->dropdown_items->get_account_heads( $this->config->item('cogs_group_id') );
@@ -211,6 +212,15 @@ class Items extends CI_Controller {
    		$this->db->query('DELETE FROM cx_item_bill_of_materials');
    		$this->db->query('DELETE FROM cx_item_inventory');
    		
+   }
+   function test()
+   {
+   	$this->load->model('dropdown_items');
+   	$this->load->model('mod_items');
+   	
+   	$data	= $this->mod_items->get_parent_items();
+   	
+   	echo json_encode($data);
    }
    
 }

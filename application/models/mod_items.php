@@ -351,5 +351,15 @@ class Mod_items extends CI_Model {
 	   	return null;
    }
    
+   function get_parent_item_type()
+   {
+   	$sql = "SELECT item_id AS id , item_name AS name , item_type_id AS type FROM cx_items WHERE has_subitem = ? ORDER BY item_name ASC";
+   	$getData = $this->db->query($sql, array( 1 )); // 0 Means it has no subitem and it is a complete product
+   	if($getData->num_rows() > 0)
+   		return $getData->result_array();
+   	else
+   		return null;
+   }
+   
 
 }

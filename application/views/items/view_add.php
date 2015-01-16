@@ -77,7 +77,7 @@
       <div class="form-group">
          <label class="col-md-5 control-label">Subitem of</label>
          <div class="col-md-7">
-            <?php echo form_dropdown('parent_item_id', $dropdown_parent_items, '','class="form-control boot-dropdown"'); ?> 
+            <?php echo form_dropdown('parent_item_id', array('' => "None"), '','class="form-control boot-dropdown" id="parent_item_id" '); ?> 
             <?php echo form_error("parent_item_id"); ?> 
          </div>
       </div>
@@ -302,6 +302,8 @@ $(function() {
 		    return false;
 		}
 	});
+
+	jsonData_parent_item_types = <?php echo json_encode($parent_item_types) ;?>;
    
    	$("#inventoryInformation").hide();
    	$('#item_information').hide(); 
@@ -313,7 +315,7 @@ $(function() {
    	$('.sales').hide();
    	$('.office_supply').hide();
    	$('#right-column').hide();
-   	
+   	$('#has_subitem').bootstrapToggle('disable');
    	
     // Has Sub Item
     $('#has_subitem').change(function() {
@@ -334,6 +336,8 @@ $(function() {
    
     $( ".item-type" ).change(function() {
 
+    	change_subItemDropdown( this.value , jsonData_parent_item_types );
+    	
     	//UnCheck Checkbox Options
     	$('#options_non_inventory').data('flag',0);
  	 	$('#options_service').data('flag', 0); 	 		   	 	    
@@ -343,7 +347,20 @@ $(function() {
  	 	
  	 	$('#options_non_inventory').data('flag',1);
  	 	$('#options_service').data('flag', 1);
+ 	 	
 
+ 	 	
+ 	 	
+		if(this.value != '')
+		{
+			$('#has_subitem').bootstrapToggle('enable');
+		}
+		else
+		{
+			$('#has_subitem').bootstrapToggle('off');
+			$('#has_subitem').bootstrapToggle('disable');
+		}
+		
  	 	if(this.value == 3)
         {
 				$(".purchase_cost").hide();
@@ -658,6 +675,19 @@ function showResponse(responseText, statusText, xhr, $form)  {
 	}  
 }
 
+function change_subItemDropdown($find, jsonData)
+{	   
+	var options = $("#parent_item_id");
+	options.val("").text("");
+	options.append($("<option />").val("").text("None"));	
+	$.each(jsonData, function(i, v) {
+	    if (v.type == $find ) 
+	    { 	    	
+	      options.append($("<option />").val(v.id).text(v.name));
+	      return;
+	    }	    
+	});
+}
 
 </script>
 
