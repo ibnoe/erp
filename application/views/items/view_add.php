@@ -70,7 +70,7 @@
       <div class="form-group">
          <label class="col-md-5 control-label">Item Type</label>
          <div class="col-md-7">
-            <?php echo form_dropdown('item_type_id', $dropdown_item_types, '','class="form-control item-type boot-dropdown"');  ?> 
+            <?php echo form_dropdown('item_type_id', $dropdown_item_types, set_value("item_type_id"),'class="form-control item-type boot-dropdown"');  ?> 
             <?php echo form_error("item_type_id"); ?> 
          </div>
       </div>
@@ -109,7 +109,7 @@
             <div class="form-group">
                <label class="col-md-5 control-label">Unit</label>
                <div class="col-md-7">
-                  <?php echo form_dropdown('unit_id', $dropdown_units, '','class="form-control boot-dropdown"'); ?> 
+                  <?php echo form_dropdown('unit_id', $dropdown_units, set_value("unit_id") ,'class="form-control boot-dropdown"'); ?> 
                   <?php echo form_error("unit_id"); ?> 
                </div>
             </div>
@@ -134,18 +134,7 @@
                   <input type="text" class="form-control"  name="reorder_level" id="reorder_level" value="<?php echo set_value("reorder_level"); ?>" >  <?php echo form_error("reorder_level"); ?> 
                </div>
             </div>
-            <div class="form-group">
-               <label class="col-md-5 control-label">On Hand</label>
-               <div class="col-md-7">
-                  <input type="text" class="form-control"  name="on_hand" id="on_hand" value="<?php echo set_value("on_hand"); ?>" >  <?php echo form_error("on_hand"); ?> 
-               </div>
-            </div>
-            <div class="form-group">
-               <label class="col-md-5 control-label">Total Value</label>
-               <div class="col-md-7">
-                  <input type="text" class="form-control"  name="total_value" id="total_value" value="<?php echo set_value("total_value"); ?>" >  <?php echo form_error("total_value"); ?> 
-               </div>
-            </div>
+            
          </div>
         </div> 
       </div>
@@ -271,9 +260,9 @@
                      </div>
                      <!-- /input-group -->
                   </td>
-                  <td class="col-md-2"><input type="text" name="cost[]" class="f-control cost"></td>
+                  <td class="col-md-2"><input type="text" name="cost[]" class="f-control cost" readonly></td>
                   <td class="col-md-2"><input type="text" name="quantity[]" class="f-control quantity"></td>
-                  <td class="col-md-2"><input type="text" name="total[]" class="f-control total"></td>                  
+                  <td class="col-md-2"><input type="text" name="total[]" class="f-control total" readonly></td>                  
                </tr>               
             </tbody>
             <tfoot>
@@ -347,9 +336,7 @@ $(function() {
  	 	
  	 	$('#options_non_inventory').data('flag',1);
  	 	$('#options_service').data('flag', 1);
- 	 	
-
- 	 	
+ 	 		 	
  	 	
 		if(this.value != '')
 		{
@@ -539,13 +526,7 @@ $(function() {
        });
 
        // Adding Total
-       MoneyOptions = {
-   			symbol : "Tk ",
-   			decimal : ".",
-   			thousand: ",",
-   			precision : 2,
-   			format: "%s%v"
-   		};
+      MoneyOptions = <?php echo json_encode($this->authex->money_format_options()) ;?>;
 
        $('body').bind('keyup', ":input[name='quantity[]']" , function() {             
       
@@ -624,9 +605,9 @@ $('body').on('click', '.dropdown-menu li a', function(event) {
          </div>
          <!-- /input-group -->
       </td>
-      <td><input type="text" name="cost[]" class="f-control cost"></td>
+      <td><input type="text" name="cost[]" class="f-control cost" readonly></td>
       <td><input type="text" name="quantity[]" class="f-control quantity"></td>
-      <td><input type="text" name="total[]" class="f-control total"></td>
+      <td><input type="text" name="total[]" class="f-control total" readonly></td>
    </tr>
 </table>
 <?php endif;?>

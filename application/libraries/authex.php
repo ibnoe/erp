@@ -43,6 +43,19 @@ function __construct()
  	{
  		return $this->ci->session->userdata('left_menus');
  	}
+ 	
+ 	function money_format_options()
+ 	{
+ 		
+ 		return array(
+ 				'symbol' => "Tk ",
+ 				'decimal' => ". ",
+ 				'thousand' => ", ",
+ 				'precision' => 2 ,
+ 				'format'=> "%s%v", 				
+ 		);
+ 		
+ 	}
  
  
  function logged_in()

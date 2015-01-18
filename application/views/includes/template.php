@@ -1,5 +1,5 @@
 <?php $this->load->view('includes/head.php'); ?>
-<?php $this->load->view('includes/left_menu'); ?>
+<?php //$this->load->view('includes/left_menu'); ?>
 
 <div class="drawer-overlay">
 

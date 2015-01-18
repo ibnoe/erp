@@ -25,10 +25,7 @@ class Mod_items extends CI_Model {
 	$item_id = $this->db->insert_id();
    	
     if ( $this->input->post('has_subitem') == 'on')
-	{
-		$this->form_validation->set_rules('unit_id', 'Unit', "required");
-		$this->form_validation->set_rules('item_code', 'Item Code', "required");			
-		
+	{		
 		// Service
 	
 		if ($this->input->post('item_type_id') == 1) // 1 = Service
@@ -182,7 +179,7 @@ class Mod_items extends CI_Model {
 			}
 			
 		}
-		elseif ($this->input->post('item_type_id') == 4) // 1 = // Non Inventory
+		elseif ($this->input->post('item_type_id') == 4) // 4 = // Non Inventory
 		{
 			if ($this->input->post('options_non_inventory') == 'on')
 			{
@@ -215,8 +212,6 @@ class Mod_items extends CI_Model {
 			}
 			else
 			{
-				$this->form_validation->set_rules('office_supply_price', 'Price', "required");
-				$this->form_validation->set_rules('office_supply_accounts', 'Accounts', "required");
 				
 				// Binding Data
 				$item_details = array(
@@ -261,14 +256,270 @@ class Mod_items extends CI_Model {
        return null;
    }
 
-   function get_single_row($id)
+   function get_single_item($id)
    {
-       $sql = "SELECT * FROM cx_items WHERE item_id = ?" ;
+       $sql = "SELECT *, i.item_id AS ItemID FROM cx_items i 
+		   		LEFT JOIN cx_item_details d ON d.item_id =i.item_id 
+		   		LEFT JOIN cx_item_sales s ON s.item_id =i.item_id
+		   		LEFT JOIN cx_item_purchase p ON p.item_id =i.item_id
+		   		LEFT JOIN cx_item_inventory t ON t.item_id =i.item_id	   		
+		   		WHERE i.item_id = ?" ;
        $getData = $this->db->query($sql,array($id));
        if($getData->num_rows() > 0)
-       return $getData->result_array();
+       {
+        	$data['info'] = $getData->result_array();	
+        	        	
+        	if( $data['info'][0]['item_type_id'] == 3 &&  $data['info'][0]['has_subitem'] == 0) // 3 = Inventory Assembly
+        	{	        		
+        		$sql = "SELECT id, m.item_id, cost, quantity, total,item_name FROM cx_item_bill_of_materials m
+        				LEFT JOIN cx_items i ON i.item_id =m.item_id
+        				  WHERE m.parent_item_id = ? ORDER BY id ASC" ;
+        		$getData = $this->db->query($sql,array($id));
+        		$data['bill_of_materials'] = $getData->result_array();   				
+        	}
+        	else 
+        	{
+        		$data['bill_of_materials'] = array();
+        	}
+        	
+        	// counting the number of child product items
+        	$sql = "SELECT count(item_id) AS childItems FROM cx_items WHERE parent_item_id = ?" ;
+        	$query = $this->db->query($sql,array($id));
+        	foreach ($query->result() as $row)
+        	{
+        		$data['childItems'] = $row->childItems;        		
+        	}
+        	 
+       }
        else
-       return null;
+       {
+       		$data['info'] = array();
+       		$data['bill_of_materials'] = array();
+       		$data['childItems'] = 0;
+       }
+       return $data; 
+   }
+   
+   function update()
+   {
+   
+	   	extract($_POST);
+	   	$has_subitem = ( $this->input->post('has_subitem') == 'on' ? 0 : 1 );
+	   
+	   	// 1 means more child items will be added to this item later
+	   	if($has_subitem == 1)
+	   	{
+	   		$data = array(
+	   				'item_type_id' => $item_type_id,	
+	   				'parent_item_id' => $parent_item_id,
+	   				'item_name' => $item_name,
+	   				'has_subitem' => $has_subitem,
+	   				'updated_at'	  => date('Y-m-d H:i:s')
+	   		);
+	   		$this->db->where('item_id', $id);
+	   		$this->db->update('cx_items', $data);
+	   	}	   
+	   	else 	// Means no more child items will be added to this item later
+	   	{	   	
+		   	$data = array(		   		   			
+		   			'parent_item_id' => $parent_item_id,
+		   			'item_name' => $item_name,		   			
+		   			'updated_at'	  => date('Y-m-d H:i:s')
+		   	);
+		   	$this->db->where('item_id', $id);
+	   		$this->db->update('cx_items', $data);
+	   	}
+	   	
+	   	if ( $this->input->post('has_subitem') == 'on')
+	   	{
+	   		// Service
+	   
+	   		if ($this->input->post('item_type_id') == 1) // 1 = Service
+	   		{
+	   			if ($this->input->post('options_service') == 'on')
+	   			{
+	   				// Binding Data
+	   				$item_details = array(
+	   						  						
+	   						'unit_id' => $unit_id,
+	   						'item_code' => $item_code,
+	   						'item_option_id' => 1, // see cx_item_options table
+	   						
+	   				);	   			
+	   				$item_purchase = array(	   					
+	   						'cost' => currency_to_number($purchase_cost) ,
+	   						'account_to_debit' => $expense_account,	   						
+	   				);
+	   				$item_sales = array(	   						
+	   						'price' => currency_to_number($price) ,
+	   						'account_to_credit' => $income_accounts,	   						
+	   				);
+	   				//Updating Database Table
+	   				$this->db->where('item_id', $id )->update('cx_item_details', $item_details);
+	   				$this->db->where('item_id', $id )->update('cx_item_purchase', $item_purchase);
+	   				$this->db->where('item_id', $id )->update('cx_item_sales', $item_sales);
+	   
+	   			}
+	   			else
+	   			{
+	   				// Binding Data
+	   				$item_details = array(   						
+	   						'unit_id' => $unit_id,
+	   						'item_code' => $item_code,
+	   						'item_option_id' => NULL,
+	   				);
+	   				$item_sales = array(	   					
+	   						'price' => currency_to_number($price) ,
+	   						'account_to_credit' => $income_accounts,	   						
+	   				);
+	   				//Updating Database Table
+	   				$this->db->where('item_id', $id )->update('cx_item_details', $item_details);	   				
+	   				$this->db->where('item_id', $id )->update('cx_item_sales', $item_sales);
+	   				// Delete item_purchase table
+	   				$this->db->delete('cx_item_purchase', array('item_id' => $id));
+	   
+	   			}
+	   		}
+	   		elseif ($this->input->post('item_type_id') == 2) // 2 = Inventory Part
+	   		{	   				
+	   			// Binding Data
+	   			$item_details = array(
+	   					
+	   					'unit_id' => $unit_id,
+	   					'item_code' => $item_code,
+	   					'item_option_id' => NULL,
+	   			);
+	   			$item_purchase = array(	   					
+	   					'cost' => currency_to_number($purchase_cost)  ,
+	   					'account_to_debit' => $cogs_account,	   					
+	   			);
+	   			$item_sales = array(	   					
+	   					'price' => currency_to_number($price) ,
+	   					'account_to_credit' => $income_accounts,	   					
+	   			);
+	   			$item_inventory = array(	   					
+	   					'asset_account' => $asset_account,
+	   					'reorder_level' => $reorder_level,	   					
+	   			);
+	   			//Updating Database Table
+	   			$this->db->where('item_id', $id )->update('cx_item_details', $item_details);
+	   			$this->db->where('item_id', $id )->update('cx_item_purchase', $item_purchase);
+	   			$this->db->where('item_id', $id )->update('cx_item_sales', $item_sales);
+	   			$this->db->where('item_id', $id )->update('cx_item_inventory', $item_inventory);  			
+	   				
+	   		}
+	   		elseif ($this->input->post('item_type_id') == 3) // 3 = Inventory Assembly
+	   		{
+	   			// Binding Data
+	   			$item_details = array(	   					
+	   					'unit_id' => $unit_id,
+	   					'item_code' => $item_code,
+	   					'item_option_id' => NULL,
+	   			);
+	   
+	   			$item_purchase = array(	   					
+	   					'cost' => currency_to_number($complete_total) ,
+	   					'account_to_debit' => $cogs_account,	   					
+	   			);
+	   			$item_sales = array(	   					
+	   					'price' => currency_to_number($price),
+	   					'account_to_credit' => $income_accounts,	   					
+	   			);
+	   			$item_inventory = array(	   					
+	   					'asset_account' => $asset_account,
+	   					'reorder_level' => $reorder_level,	   					
+	   			);
+	   			//Updating Database Table
+	   			$this->db->where('item_id', $id )->update('cx_item_details', $item_details);
+	   			$this->db->where('item_id', $id )->update('cx_item_purchase', $item_purchase);
+	   			$this->db->where('item_id', $id )->update('cx_item_sales', $item_sales);
+	   			$this->db->where('item_id', $id )->update('cx_item_inventory', $item_inventory);
+	   				
+
+	   			// Bill of Materials
+	   			$product_id 	= $this->input->post('product_id');
+	   			$cost 			= $this->input->post('cost');
+	   			$quantity 		= $this->input->post('quantity');
+	   			$total 			= $this->input->post('total');   				
+
+	   			// Removing the previous data
+	   			$this->db->delete('cx_item_bill_of_materials', array('parent_item_id' => $id));
+	   			
+	   			//Inserting new data
+	   			if (count($product_id) > 0)
+	   			{
+	   				for ($i = 0; $i < count($product_id); $i++)
+	   				{
+	   					if ($product_id[$i] != "")
+	   					{
+	   						$cx_item_bill_of_materials = array(
+	   								'id' => '',
+	   								'item_id' 	=> $product_id[$i],
+	   								'cost' 		=> $cost[$i],
+	   								'quantity' 	=> $quantity[$i],
+	   								'total'		=> currency_to_number( $total[$i] ),
+	   								'parent_item_id	'=> $id
+	   						);
+	   						//Inserting Into Database Table
+	   						$this->db->insert('cx_item_bill_of_materials', $cx_item_bill_of_materials );
+	   					}
+	   				}
+	   			}
+	   				
+	   		}
+	   		elseif ($this->input->post('item_type_id') == 4) // 4 = // Non Inventory
+	   		{
+	   			if ($this->input->post('options_non_inventory') == 'on')
+	   			{
+	   				// Binding Data
+	   				$item_details = array(		   						
+	   						'unit_id' => $unit_id,
+	   						'item_code' => $item_code,
+	   						'item_option_id' => 2, // see cx_item_options table
+	   				);
+	   				$item_purchase = array(	   						
+	   						'cost' => $purchase_cost,
+	   						'account_to_debit' => $cogs_account,	   						
+	   				);
+	   				$item_sales = array(	   						
+	   						'price' => $price,
+	   						'account_to_credit' => $income_accounts,	   						
+	   				);	   			
+	   				//Updating Database Table
+	   				$this->db->where('item_id', $id )->update('cx_item_details', $item_details);
+	   				$this->db->where('item_id', $id )->update('cx_item_purchase', $item_purchase);
+	   				$this->db->where('item_id', $id )->update('cx_item_sales', $item_sales);	   
+	   			}
+	   			else
+	   			{	   
+	   				// Binding Data
+	   				$item_details = array(	   						
+	   						'unit_id' => $unit_id,
+	   						'item_code' => $item_code,
+	   						'item_option_id' => NULL,
+	   				);
+	   				$item_sales = array(	   						
+	   						'price' => $office_supply_price,
+	   						'account_to_credit' => $office_supply_accounts,	   						
+	   				);
+	   				//Updating Database Table
+	   				$this->db->where('item_id', $id )->update('cx_item_details', $item_details);	   				
+	   				$this->db->where('item_id', $id )->update('cx_item_sales', $item_sales);	   				
+	   				// Delete item_purchase table
+	   				$this->db->delete('cx_item_purchase', array('item_id' => $id));
+	   				
+	   
+	   			}
+	   		}
+	   	}
+	   	if($this->db->affected_rows() > 0)
+	   	{
+	   		return TRUE;
+	   	}
+	   	else
+	   	{
+	   		return FALSE;
+	   	}
    }
 
    function edit()
