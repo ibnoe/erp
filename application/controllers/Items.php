@@ -146,7 +146,7 @@ class Items extends CI_Controller {
    function show()
    {
        $this->load->model('mod_items');
-       $data['records']= $this->mod_items->get_all();
+       $data['records'] = $this->mod_items->get_all();   
        $data['page_title'] = 'List of items' ;
        $data['main_content'] = 'items/view_show' ;
        $this->load->view('includes/template', $data);

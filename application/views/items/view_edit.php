@@ -289,7 +289,7 @@
    </div>
 </div>
 </form>
-
+<div id="subItemflag" style="display:none;">1</div>
 <script>
 $(function() {
 	
@@ -301,6 +301,7 @@ $(function() {
 		}
 	});	
 	jsonData_parent_item_types = <?php echo json_encode($parent_item_types) ;?>;
+	
    
    	$("#inventoryInformation").hide();
    	$('#item_information').hide(); 
@@ -333,7 +334,10 @@ $(function() {
    
     $( ".item-type" ).change(function() {
 
-    	change_subItemDropdown( this.value , jsonData_parent_item_types );
+    	if($("#subItemflag").html() == "")
+    	{
+    		change_subItemDropdown( this.value , jsonData_parent_item_types );
+    	}   	
     	
     	//UnCheck Checkbox Options
     	$('#options_non_inventory').data('flag',0);
@@ -652,11 +656,12 @@ function change_subItemDropdown($find, jsonData)
 	options.append($("<option />").val("0").text("None"));	
 	$.each(jsonData, function(i, v) {
 	    if (v.type == $find && v.id != $item_id ) 
-	    { 	    	
+	    { 	    		    	
 	      options.append($("<option />").val(v.id).text(v.name));
 	      return;
 	    }	    
 	});
+	
 }
 
 </script>
@@ -684,7 +689,8 @@ $(function() {
 
 	var jsonData_parent_item_types = <?php echo json_encode($parent_item_types) ;?>;
 	change_subItemDropdown( <?php echo $records['info'][0]['item_type_id']; ?> , jsonData_parent_item_types);
-	$("#parent_item_id").val("<?php echo $records['info'][0]['parent_item_id']; ?>");
+	$("#parent_item_id").val("<?php echo $records['info'][0]['parent_item_id']; ?>");	
+	$(".boot-dropdown").selectpicker("refresh"); // need this to populate "subitem of", do not remove
 	
 	// Adding Total
 	MoneyOptions = <?php echo json_encode($this->authex->money_format_options()) ;?>;
@@ -786,12 +792,15 @@ else
 {
 	if($records['childItems'] == 0)
 	{
-		echo '$( ".item-type" ).trigger( "change" );';
+		echo '$("#subItemflag").html("1");';
+		echo '$( ".item-type" ).trigger( "change" );';		
 		echo '$("#has_subitem").bootstrapToggle("enable");';
+		echo '$("#subItemflag").html("");';
 		
 	}	
 }
 
 ?>
+
 }); 
 </script>

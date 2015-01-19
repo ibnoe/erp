@@ -246,14 +246,25 @@ class Mod_items extends CI_Model {
 
    function get_all()
    {
-       $this->db->select('*');
+       $this->db->select('item_id, parent_item_id,item_name,item_type_name');
        $this->db->from('cx_items');
+       $this->db->join('cx_item_types','cx_item_types.item_type_id = cx_items.item_type_id', 'left');       
        $this->db->order_by('item_name','ASC');
+       $this->db->order_by('cx_item_types.item_type_id','ASC');
        $getData = $this->db->get('');
        if($getData->num_rows() > 0)
-       return $getData->result_array();
+       {
+       		$prepared_list = $this->prepareList( $getData->result_array() );       
+       		$list = array();		
+       		$records = $this->break_array($prepared_list,$counter = NULL, $list );     		
+       		return $this->arrange_items_array($records , $getData->result_array() ) ;     		
+       }
        else
-       return null;
+       {
+       	
+       		return NULL;
+       }
+       
    }
 
    function get_single_item($id)
@@ -318,6 +329,14 @@ class Mod_items extends CI_Model {
 	   		);
 	   		$this->db->where('item_id', $id);
 	   		$this->db->update('cx_items', $data);
+	   		
+	   		// Delete related information from other table	   	 		
+	   		$this->db->delete('cx_item_details', array('item_id' => $id));
+	   		$this->db->delete('cx_item_purchase', array('item_id' => $id));
+	   		$this->db->delete('cx_item_sales', array('item_id' => $id));
+	   		$this->db->delete('cx_item_inventory', array('item_id' => $id));
+	   		$this->db->delete('cx_item_bill_of_materials', array('parent_item_id' => $id));
+	   		
 	   	}	   
 	   	else 	// Means no more child items will be added to this item later
 	   	{	   	
@@ -611,6 +630,81 @@ class Mod_items extends CI_Model {
    	else
    		return null;
    }
+   
+   
+
+   function arrange_items_array($preparedArray, $dbrecords)
+   {
+	   	$i = 0;
+	   	foreach($preparedArray as $key => $value)
+	   	{
+	   		foreach($dbrecords as $rows)
+	   		{
+	   			if ($key == $rows['item_id'])
+	   			{
+	   				$data[$i]['item_id'] = $key;
+	   				$data[$i]['item_name'] = $value;
+	   				$data[$i]['item_type_name'] = $rows['item_type_name'];
+	   			}
+	   		}
+	   
+	   		$i++;
+	   	}	   
+	   	return $data;
+   }
+   
+   function prepareList(array $items, $pid = 0)
+   {
+	   	$output = array();	   
+	   	# loop through the items
+	   	foreach ($items as $item) 
+	   	{	   
+		   	# Whether the parent_id of the item matches the current $pid
+		   	if ((int) $item['parent_item_id'] == $pid) 
+		   	{   		   	
+			   	if ($children = $this->prepareList($items, $item['item_id'])) 
+			   	{
+			   		# Store all children of the current item
+			   		$item['children'] = $children;
+			   	}		   
+			   	# Fill the output
+			   	$output[] = $item;
+		   	}
+   		}   
+   		return $output;
+   	}
+   
+   	function break_array($data, $counter = NULL, &$list)
+   	{
+	   	foreach($data as $row)
+	   	{
+		   	if( array_key_exists('children', $row) )
+		   	{
+		   		
+			   	$list[ $row['item_id'] ] =  $this->print_space($counter).$row['item_name'];
+			   	$counter++;
+			   	$this->break_array($row['children'], $counter, $list );
+			   	$counter--;
+		   	}
+			else
+		   	{
+		   		$list[ $row['item_id'] ] = $this->print_space($counter). $row['item_name'];
+		   	}
+	   	}  		
+	   	
+   		return $list;
+   	}
+   
+   	function print_space($count)
+   	{
+   		$html = "";
+   		for ($i = 1; $i <= $count; $i++)
+   		{
+   			$html .= "&nbsp;&nbsp; -- &nbsp;&nbsp;";
+   		}
+   		return $html;
+   	}
+   		 
    
 
 }
