@@ -94,7 +94,7 @@ function __construct()
      		$CI->db->update("cx_users", $data);
      		
      		// Get Menu Items for the user
-     		$sql = "SELECT menu_name, menu_link, section_id FROM cx_permissions
+     		$sql = "SELECT menu_name, menu_link,section_id, is_hidden, class_method FROM cx_permissions
 					INNER JOIN cx_menus ON cx_permissions.menu_id = cx_menus.menu_id
 					WHERE role_id = ?";     		
      		$result = $CI->db->query($sql, array( $query->row()->role_id  ) );
@@ -115,10 +115,15 @@ function __construct()
      				if ($QueryResult->num_rows() > 0)
      				{
      					foreach ($QueryResult->result() as $rows)
-     					{
-     						$menu_items[$rows->module_name ][] = array("menuName" => $row->menu_name, "menuLink" => $row->menu_link);  															
+     					{     						
+     						if($row->is_hidden == 0)
+     						{
+     							$menu_items[$rows->module_name ][] = array("menuName" => $row->menu_name, "menuLink" => $row->menu_link);
+     						}	  															
      					}
-     				}     				
+     				}
+
+     				$permissions[] = trim($row->class_method);
      			}
      		}
      		 		
@@ -128,6 +133,7 @@ function __construct()
      		$CI->session->set_userdata("user_name", $query->row()->employee_name);
      		$CI->session->set_userdata("branch_id", $query->row()->branch_id);
      		$CI->session->set_userdata("left_menus", $menu_items);
+     		$CI->session->set_userdata("permissions", $permissions);
      		
      		return TRUE;
      		   		
@@ -149,6 +155,33 @@ function __construct()
      $CI->session->unset_userdata("branch_id");    
 	 $this->ci->session->sess_destroy();
  }
+ 
+ public static function checkUrlPermission()
+ {
+ 	$CI =& get_instance(); 
+ 	$url = trim( strtolower( $CI->router->fetch_class() ) ."-". strtolower( $CI->router->fetch_method() ) ); 
+ 	$excluding = array("home-index", "home-logout", "auth-index");
+ 	 	
+ 	if(!in_array($url , $excluding))
+ 	{
+ 		if(!in_array( $url,  $CI->session->userdata("permissions") ))
+ 		{
+ 			redirect();
+ 		}
+ 	}
+ }
 
-  
+ public static function Permission($actionName = NULL)
+ {
+ 	$CI =& get_instance();
+ 	if(in_array( $actionName ,  $CI->session->userdata("permissions") ))
+ 	{
+ 		return TRUE;
+ 	}
+ 	else
+ 	{
+ 		return FALSE;
+ 	}
+ }
+   
 }

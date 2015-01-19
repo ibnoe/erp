@@ -81,6 +81,10 @@ $(function() {
         return false;
 
     });
+    /*
+     *  Enable the following code to keep the left menu open
+    $("#toogle-menu").data("status", "close");
+    $( "#toogle-menu").trigger( "click"); */
     
     // To remove hash from links when clicking on Left Menu items 
     $( ".menu-list > ul > li > a" ).click(function( event ) {

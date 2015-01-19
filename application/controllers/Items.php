@@ -147,13 +147,14 @@ class Items extends CI_Controller {
    {
        $this->load->model('mod_items');
        $data['records'] = $this->mod_items->get_all();   
-       $data['page_title'] = 'List of items' ;
+       $data['page_title'] = 'List of Items' ;
        $data['main_content'] = 'items/view_show' ;
        $this->load->view('includes/template', $data);
    }
    
    function edit($id = NULL)
    {
+
 	   	$this->load->library('form_validation');
 	   	$this->form_validation->set_error_delimiters('<div class="">', '</div>');
 	
@@ -278,59 +279,8 @@ class Items extends CI_Controller {
 	   		echo "<pre>";
 	   		 print_r(($_POST));  
 	   	}
-   }
+   }   
    
-    
-
-   function editOLD($id)
-   {
-       $this->load->library('form_validation');
-       $this->form_validation->set_error_delimiters('<span class="error">', '</span>'); 
-
-       if ($this->form_validation->run() == FALSE) 
-       { 
-	       	$this->load->model('dropdown_items');
-	       	$this->load->model('mod_items');
-	       	
-	       	$data['parent_item_types']	= $this->mod_items->get_parent_item_type();
-	       	
-	       	$data['dropdown_items']	= $this->mod_items->get_product_items_with_price();
-	       	$data['dropdown_item_types']= $this->dropdown_items->create_dropdown('cx_item_types', 'item_type_id', 'item_type_name', 'Select an item type' );
-	       	$data['dropdown_units']	= $this->dropdown_items->create_dropdown('cx_units', 'unit_id', 'unit_name', 'Select an unit' );
-	       	$data['all_accounts_head']	= $this->dropdown_items->create_dropdown('cx_account_heads', 'acc_id', 'account_name', 'Select an account' );
-	       	$data['cogs_accounts'] = $this->dropdown_items->get_account_heads( $this->config->item('cogs_group_id') );
-	       	$data['income_accounts'] = $this->dropdown_items->get_account_heads( $this->config->item('income_group_id') );
-	       	$data['assets_accounts'] = $this->dropdown_items->get_account_heads( $this->config->item('asset_group_id') );
-	       	$data['expense_accounts'] = $this->dropdown_items->get_account_heads( $this->config->item('expense_group_id') );
-	       	
-	       	
-	       	$data['records'] = $this->mod_items->get_single_item($id);
-            $data['page_title'] = 'Edit items' ;
-            $data['main_content'] = 'items/view_edit' ;
-            $this->load->view('includes/template', $data);
-       } 
-       else 
-       { 
-       		$this->load->model('mod_items');
-       		$response = $this->mod_items->edit();
-       	   if ($response) 
-           { 
-
-       			$base = base_url().'items/show'; 
-       			$data['type']='alert alert-success'; 
-       			$data['msg']='Successfully Edited'; 
-            } 
-           else 
-           { 
-       			$base = base_url().'items/show'; 
-       			$data['type']='alert alert-danger'; 
-       			$data['msg']='Could not perform the requested action'; 
-            } 
-            $data['page_title'] = 'Edit items' ;
-            $data['main_content'] = 'view_success' ;
-            $this->load->view('includes/template', $data);
-       } 
-   }
 
    function delete_item()
    {

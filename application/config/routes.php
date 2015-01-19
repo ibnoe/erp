@@ -98,5 +98,6 @@ $route['purchase/return'] 		      			= "purchase/purchase_return";
 $route['purchase/show-return'] 					= "purchase/purchase_return_show";
 $route['purchase/return-history'] 				= "purchase/return_history";
 
+
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */

@@ -8,6 +8,7 @@
 <div class="container-fluid" style="margin-left:2%; margin-right:2%;">
 	<div class="row-fluid">
 		<div class="pull-right"><button class="btn"><span class="glyphicon glyphicon-print"></span> Print</button></div>
+		
 		<h3 class="pageTitle"><?php echo $page_title ; ?></h3>
 		
 		<hr>
@@ -17,3 +18,4 @@
 </div>
 <?php $this->load->view('includes/footer'); ?>
 </div>
+

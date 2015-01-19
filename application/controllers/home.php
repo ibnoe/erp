@@ -9,8 +9,8 @@ function __construct()
         
     }    
 	
-	function index(){
-		
+	function index()
+	{
 		$data['page_title'] = 'Dashboard' ;
         $data['main_content'] = 'view_dashboard' ;
         $this->load->view('includes/template', $data);		
