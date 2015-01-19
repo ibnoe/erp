@@ -39,6 +39,16 @@ function __construct()
 		 return $this->ci->session->userdata('user_name');
  	}
  	
+ 	function get_branch_id()
+ 	{
+ 		return $this->ci->session->userdata('branch_id');
+ 	}
+ 	
+ 	function get_branch_name()
+ 	{
+ 		return $this->ci->session->userdata('branch_name');
+ 	}
+ 	
  	function get_left_menus()
  	{
  		return $this->ci->session->userdata('left_menus');
@@ -67,14 +77,17 @@ function __construct()
  function login($email, $password)
  {
      $CI =& get_instance();
-
-     $query = $CI->db->select('user_id,user_password, role_id, employee_name, branch_id')
-     		->from('cx_users')
-     		->join('cx_employees', 'cx_employees.employee_id = cx_users.employee_id')
-     		->where('user_email', $email)     		
-     		->where('user_status', 1)
-     	    ->get('');	     
-
+     $sql = "SELECT user_id,user_password, role_id, employee_name, a.branch_id, branch_name 
+	     		FROM (
+	     			SELECT user_id,user_password, role_id, employee_name, branch_id
+		     		FROM cx_users u 
+		     		INNER JOIN cx_employees e ON e.employee_id = u.employee_id
+		     		WHERE user_email = ? AND user_status = ?
+	     		) a  
+     		INNER JOIN cx_branch b ON b.branch_id = a.branch_id
+     		";     
+     $query = $CI->db->query($sql, array($email , 1));
+  
      if($query->num_rows() !== 1)
      {
          return false;
@@ -132,6 +145,7 @@ function __construct()
      		$CI->session->set_userdata("role_id", $query->row()->role_id);
      		$CI->session->set_userdata("user_name", $query->row()->employee_name);
      		$CI->session->set_userdata("branch_id", $query->row()->branch_id);
+     		$CI->session->set_userdata("branch_name", $query->row()->branch_name);
      		$CI->session->set_userdata("left_menus", $menu_items);
      		$CI->session->set_userdata("permissions", $permissions);
      		

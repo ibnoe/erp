@@ -303,16 +303,8 @@ class Items extends CI_Controller {
    		$this->db->query('DELETE FROM cx_item_purchase');
    		$this->db->query('DELETE FROM cx_item_sales');
    		$this->db->query('DELETE FROM cx_item_bill_of_materials');
-   		$this->db->query('DELETE FROM cx_item_inventory');
-   		
+   		$this->db->query('DELETE FROM cx_item_inventory');   		
    }
-   function test()
-   { $id = 13;
-   $this->load->model('mod_items');
-   	$records = $this->mod_items->get_single_item($id);
-   	echo "<pre>";
-   	print_r($records);
-
-   }
+   
    
 }

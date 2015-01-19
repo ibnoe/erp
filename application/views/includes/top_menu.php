@@ -128,7 +128,11 @@
                <!-- End of Attendance  -->
                
             </ul>
-
+			
+			 <div class="pull-right" style="color: white; font-size:12px;">
+			 			<?php echo $this->authex->get_user_name();?> <br>
+			 			Branch : <?php echo $this->authex->get_branch_name();?>
+			 </div>
 
          </div>
       </div>

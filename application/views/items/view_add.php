@@ -570,7 +570,7 @@ $('body').on('focus', '.product, .quantity', function() {
 });
 
 
-$('body').on('click', '.dropdown-menu li a', function(event) {
+$('body').on('click', '#bill_of_materials .dropdown-menu li a', function(event) {
 	   event.preventDefault();    	   
 	   var selText = $(this).text();
 	   var id = $(this).data("id");
