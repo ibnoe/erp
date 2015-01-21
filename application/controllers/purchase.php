@@ -1,19 +1,79 @@
 <?php
-class Purchase extends CI_Controller
+class Purchase extends CI_Controller {
 
-{
 	function __construct()
 	{
 		parent::__construct();
 		include 'parent_construct.php';
 
 	}
+	
 
-	// -------------------------------------------------- Purchase ----------------------------------------------- //
-	function test()
+	function add()
 	{
-		$obj = new Mod_purchase();
+		$this->load->library('form_validation');
+		$this->form_validation->set_error_delimiters('<div class="">', '</div>');
+		$this->form_validation->set_rules('item_type_id', 'Item Type', "required");
+		$this->form_validation->set_rules('item_name', 'Item Name', "required");
+		
+		$product_id = $this->input->post('product_id');
+		$cost = $this->input->post('cost');
+		$quantity = $this->input->post('quantity');
+		$total = $this->input->post('total');
+		if (count($product_id) > 0)
+		{
+			$err = 0;
+			for ($i = 0; $i < count($product_id); $i++)
+			{
+				if (!empty($product_id[$i]))
+				{
+					$err+= (empty($cost[$i]) ? 1 : 0);
+					$err+= (empty($quantity[$i]) ? 1 : 0);
+					$err+= (empty($total[$i]) ? 1 : 0);
+				}
+			}
+			if ($err > 0)
+			{
+				$this->form_validation->set_rules('bill_of_materials', 'Total Value', 'callback_customRule');
+			}
+		}
+		else
+		{
+			$this->form_validation->set_rules('bill_of_materials', 'Total Value', 'callback_customRule');
+		}
+			
+		
+		
+	
+		if ($this->form_validation->run() == FALSE)
+		{
+			if ($this->input->is_ajax_request())
+			{
+				echo validation_errors();
+			}
+			else
+			{
+				$this->load->model('dropdown_items');
+				$this->load->model('mod_items');
+
+				$data['dropdown_vendors'] = $this->dropdown_items->create_dropdown('cx_vendors', 'vendor_id', 'vendor_name', 'Select a vendor');
+				$data['dropdown_items']	= $this->mod_items->get_product_items_with_price();
+				
+				$data['page_title'] = 'New Purchase Order';
+				$data['main_content'] = 'purchase/view_add';
+				$this->load->view('includes/template', $data);
+			}
+		}
+		else
+		{
+			$this->load->model('mod_items');
+			$this->mod_items->add();
+			echo "Successfully Added";
+			/* echo "<pre>";
+			 print_r(($_POST)); */
+		}
 	}
+	/*
 	function add()
 	{
 		if ($this->input->server('REQUEST_METHOD') === 'POST')
@@ -36,7 +96,7 @@ class Purchase extends CI_Controller
 			$data['main_content'] = 'purchase/view_add';
 			$this->load->view('includes/template', $data);
 		}
-	}
+	}*/
 
 	function add_to_cart()
 	{

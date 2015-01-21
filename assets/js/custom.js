@@ -111,7 +111,7 @@ $(function() {
     //Styling Dropdown
     $('.boot-dropdown').selectpicker();
   //  $('#parent_item_id').selectpicker();
-    
+    $('.branch-item-tag').selectpicker();
     
     
 });

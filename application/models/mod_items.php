@@ -23,9 +23,28 @@ class Mod_items extends CI_Model {
 	);
 	$this->db->insert('cx_items', $data);
 	$item_id = $this->db->insert_id();
+
    	
     if ( $this->input->post('has_subitem') == 'on')
-	{		
+	{	
+		// Tagging/Inserting Branch and Items. This is basically done to make the product item avaiable to the taged branches
+		$num_of_branch_ids = count($branch_ids);
+		if($num_of_branch_ids > 0)
+		{ 
+			$q1 ="";
+			for($j = 0; $j < $num_of_branch_ids; $j++)
+			{
+				$q1 .= "(". $id .",". $branch_id[$j] .")" ;
+			
+				if($j != $num_of_branch_ids-1)
+				{
+					$q1 .= ",";
+				}
+			}
+			$sql = "INSERT IGNORE INTO cx_tag_branch_items (item_id, branch_id) VALUES $q1" ;
+			$query = $this->db->query($sql);
+		}
+				
 		// Service
 	
 		if ($this->input->post('item_type_id') == 1) // 1 = Service
@@ -66,7 +85,7 @@ class Mod_items extends CI_Model {
 						'item_id' => $item_id,
 						'unit_id' => $unit_id,
 						'item_code' => $item_code,
-						'item_option_id' => NULL,
+						'item_option_id' => 5, // Regular Sales Item see cx_item_options table
 				);
 				$item_sales = array(
 						'id' => '',
@@ -89,7 +108,7 @@ class Mod_items extends CI_Model {
 					'item_id' => $item_id,
 					'unit_id' => $unit_id,
 					'item_code' => $item_code,
-					'item_option_id' => NULL,
+					'item_option_id' => 3, // Regular Inventory part see cx_item_options table
 			);
 			$item_purchase = array(
 					'id' => '',
@@ -124,7 +143,7 @@ class Mod_items extends CI_Model {
 					'item_id' => $item_id,
 					'unit_id' => $unit_id,
 					'item_code' => $item_code,
-					'item_option_id' => NULL,
+					'item_option_id' => 4, // Regular Inventory Assembly see cx_item_options table
 			);
 
 			$item_purchase = array(
@@ -219,7 +238,7 @@ class Mod_items extends CI_Model {
 						'item_id' => $item_id,
 						'unit_id' => $unit_id,
 						'item_code' => $item_code,
-						'item_option_id' => NULL,
+						'item_option_id' => 6 , // see cx_item_options table
 				);
 				$item_sales = array(
 						'id' => '',
@@ -269,11 +288,12 @@ class Mod_items extends CI_Model {
 
    function get_single_item($id)
    {
-       $sql = "SELECT *, i.item_id AS ItemID FROM cx_items i 
+       $sql = "SELECT *, i.item_id AS ItemID , group_concat(z.branch_id separator ',') as branch_ids FROM cx_items i 
 		   		LEFT JOIN cx_item_details d ON d.item_id =i.item_id 
 		   		LEFT JOIN cx_item_sales s ON s.item_id =i.item_id
 		   		LEFT JOIN cx_item_purchase p ON p.item_id =i.item_id
-		   		LEFT JOIN cx_item_inventory t ON t.item_id =i.item_id	   		
+		   		LEFT JOIN cx_item_inventory t ON t.item_id =i.item_id
+       		    LEFT JOIN cx_tag_branch_items z ON z.item_id =i.item_id	   		
 		   		WHERE i.item_id = ?" ;
        $getData = $this->db->query($sql,array($id));
        if($getData->num_rows() > 0)
@@ -349,6 +369,29 @@ class Mod_items extends CI_Model {
 	   		$this->db->update('cx_items', $data);
 	   	}
 	   	
+	   	// Update Branch and Item Tags
+	   		// In db table we have UNIQUE KEY `tag_item_branch` (`item_id`,`branch_id`);
+	   		// Removing the one that is not in $branch_id
+		   	$sql = "DELETE FROM cx_tag_branch_items WHERE item_id = ? AND branch_id NOT IN ?" ;
+		   	$query = $this->db->query($sql,array($id, $branch_ids));
+		   	
+		   	// Inserting the new values, it will affect the existing data in the table.
+		   	$num_of_branch_ids = count($branch_ids);
+		   	$q1 ="";
+		   	for($j = 0; $j < $num_of_branch_ids; $j++)
+		   	{
+		   		$q1 .= "(". $id .",". $branch_ids[$j] .")" ;
+		   		
+		   		if($j != $num_of_branch_ids-1)
+		   		{
+		   			$q1 .= ",";
+		   		}
+		   	}	   	
+		   	$sql = "INSERT IGNORE INTO cx_tag_branch_items (item_id, branch_id) VALUES $q1" ;
+		   	$query = $this->db->query($sql);
+	   	
+	   	// End of updating Branch and Item Tags
+	   	
 	   	if ( $this->input->post('has_subitem') == 'on')
 	   	{
 	   		// Service
@@ -385,7 +428,7 @@ class Mod_items extends CI_Model {
 	   				$item_details = array(   						
 	   						'unit_id' => $unit_id,
 	   						'item_code' => $item_code,
-	   						'item_option_id' => NULL,
+	   						'item_option_id' => 5 , // see cx_item_options table
 	   				);
 	   				$item_sales = array(	   					
 	   						'price' => currency_to_number($price) ,
@@ -433,7 +476,7 @@ class Mod_items extends CI_Model {
 	   			$item_details = array(	   					
 	   					'unit_id' => $unit_id,
 	   					'item_code' => $item_code,
-	   					'item_option_id' => NULL,
+	   					'item_option_id' => 4, // see cx_item_options table
 	   			);
 	   
 	   			$item_purchase = array(	   					
@@ -515,7 +558,7 @@ class Mod_items extends CI_Model {
 	   				$item_details = array(	   						
 	   						'unit_id' => $unit_id,
 	   						'item_code' => $item_code,
-	   						'item_option_id' => NULL,
+	   						'item_option_id' => 6,
 	   				);
 	   				$item_sales = array(	   						
 	   						'price' => $office_supply_price,

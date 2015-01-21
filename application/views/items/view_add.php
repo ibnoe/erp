@@ -106,6 +106,7 @@
      <div id="item_information">	
          <div class="content-title">Item Information</div>
          <div id="Display_on_assembly">
+ 
             <div class="form-group">
                <label class="col-md-5 control-label">Unit</label>
                <div class="col-md-7">
@@ -120,11 +121,20 @@
                   <?php echo form_error("item_code"); ?> 
                </div>
             </div>
+                                
+          <div class="form-group">
+               <label class="col-md-5 control-label">Tag Branch</label>
+               <div class="col-md-7">
+                  <?php echo form_multiselect('branch_ids[]', $dropdown_branches, '','class="form-control branch-item-tag" data-selected-text-format="count" multiple data-live-search="true" data-size="5"'); ?> 
+                  <?php echo form_error("branch_ids"); ?>  
+               </div>
+            </div>
+         
             <div id="inventoryInformation"> 
             <div class="form-group">
                <label class="col-md-5 control-label">Asset Account</label>
                <div class="col-md-7">
-                  <?php echo form_dropdown('asset_account', $assets_accounts, '','class="form-control boot-dropdown"'); ?> 
+                  <?php echo form_dropdown('asset_account', $assets_accounts, '','class="form-control boot-dropdown" multiple data-live-search="true" data-size="5"'); ?> 
                   <?php echo form_error("asset_account"); ?> 
                </div>
             </div>
@@ -133,7 +143,7 @@
                <div class="col-md-7">
                   <input type="text" class="form-control"  name="reorder_level" id="reorder_level" value="<?php echo set_value("reorder_level"); ?>" >  <?php echo form_error("reorder_level"); ?> 
                </div>
-            </div>
+            </div>          
             
          </div>
         </div> 
@@ -284,7 +294,7 @@
 
 <script>
 $(function() {
-
+	
 	$('html').bind('keypress', function(e){
 		if(e.keyCode == 13)
 		{

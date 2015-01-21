@@ -42,6 +42,19 @@ class Dropdown_items extends CI_Model{
 		return $data;		
 	}
 	
+	function get_branches()
+	{		
+		$sql = "SELECT branch_id, branch_name, company_name FROM cx_branch
+				LEFT JOIN cx_company ON cx_company.company_id = cx_branch.company_id ";				
+		$records = $this->db->query($sql);		
+		$data = array();
+		foreach ($records->result() as $row)
+		{
+			$data[$row->branch_id] = $row->branch_name ." - ". $row->company_name  ;
+		}
+		return $data;
+	}
+	
 	
 	
 }

@@ -12,11 +12,8 @@ $(function() {
 	        document.location = $(this).data('href');
 	    }
 	});
-
 });
 </script>
-
-
 <?php } ?>
 <?php if(count($records) > 0) { ?>
 <table class="table table-striped table-bordered table-hover" cellspacing="0" width="100%" id="gtable">

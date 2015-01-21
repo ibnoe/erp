@@ -20,10 +20,10 @@
                    	</ul>
                  </li>
                  <?php } ?> 
-                 <?php } ?>              
+                 <?php } ?>
+                             
             </ul>
      </div>
 </div>
 </div>
 <!-- End of Menu -->
-

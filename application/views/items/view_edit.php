@@ -124,6 +124,15 @@
                   <?php echo form_error("item_code"); ?> 
                </div>
             </div>
+            
+            <div class="form-group">
+               <label class="col-md-5 control-label">Tag Branch</label>
+               <div class="col-md-7">
+                  <?php echo form_multiselect('branch_ids[]', $dropdown_branches, set_value("branch_ids") ,'class="form-control branch-item-tag" data-selected-text-format="count" multiple data-live-search="true" data-size="5"'); ?> 
+                  <?php echo form_error("branch_ids"); ?>  
+               </div>
+            </div>
+            
             <div id="inventoryInformation"> 
             <div class="form-group">
                <label class="col-md-5 control-label">Asset Account</label>
@@ -290,8 +299,11 @@
 </div>
 </form>
 <div id="subItemflag" style="display:none;">1</div>
+
 <script>
 $(function() {
+	// Populating data
+	$('.branch-item-tag').selectpicker('val', [ <?php echo $records['info'][0]['branch_ids'];?> ] );
 	
 	// Diable Enter Key
 	$('html').bind('keypress', function(e){
@@ -734,6 +746,8 @@ if ( $records['info'][0]['has_subitem']  == '0' )
 		{
 			
 			echo '$(".purchase").show();' ;
+			echo '$(".cogs").hide();' ;
+			echo '$(".expense").show();' ;
 			echo '$(".sales").show();' ;			
 			echo '$("#options_service").bootstrapToggle("on");'; 
 			echo '$(".options_service").show();';
@@ -780,7 +794,7 @@ if ( $records['info'][0]['has_subitem']  == '0' )
 		}
 		else
 		{
-			echo '$(".sales").show();' ;
+			echo '$(".office_supply").show();' ;
 			echo '$("#item_information").show();' ;				
 			echo '$("#options_non_inventory").bootstrapToggle("off");';
 			echo '$("#options_non_inventory").data("flag",1);';

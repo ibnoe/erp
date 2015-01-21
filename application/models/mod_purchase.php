@@ -1,6 +1,7 @@
 <?php
 class Mod_purchase extends CI_Model {
 
+	
 	function add() 
 	{
 		
@@ -382,5 +383,8 @@ class Mod_purchase extends CI_Model {
 		return null;
 
 	}
+	
+	
+	
 
 }
